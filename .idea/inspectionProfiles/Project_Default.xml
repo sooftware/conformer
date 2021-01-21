@@ -1,0 +1,29 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <Languages>
+        <language minSize="86" name="Python" />
+      </Languages>
+    </inspection_tool>
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="11">
+            <item index="0" class="java.lang.String" itemvalue="python-Levenshtein" />
+            <item index="1" class="java.lang.String" itemvalue="sentencepiece" />
+            <item index="2" class="java.lang.String" itemvalue="librosa" />
+            <item index="3" class="java.lang.String" itemvalue="transformers" />
+            <item index="4" class="java.lang.String" itemvalue="sentence_transformers" />
+            <item index="5" class="java.lang.String" itemvalue="python-mecab-ko" />
+            <item index="6" class="java.lang.String" itemvalue="word2word" />
+            <item index="7" class="java.lang.String" itemvalue="torch" />
+            <item index="8" class="java.lang.String" itemvalue="kss" />
+            <item index="9" class="java.lang.String" itemvalue="g2p_en" />
+            <item index="10" class="java.lang.String" itemvalue="torchvision" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

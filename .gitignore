@@ -1,3 +1,19 @@
+experiment/
+experiment/*
+data/sample
+data/sample/*
+data/data_list/debug_list.csv
+data/data_list/sample_list.csv
+*.bin
+*.zip
+*.idea
+docs/training
+docs/training/*
+__pycache__/
+venv/*
+*.pyc
+.idea
+.ipynb_checkpoints
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

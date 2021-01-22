@@ -11,3 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+import torch.nn as nn
+
+
+class ConformerDecoder(nn.Module):
+    def __init__(self):
+        super(ConformerDecoder, self).__init__()

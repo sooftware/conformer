@@ -18,45 +18,6 @@ import torch.nn.init as init
 from torch import Tensor
 
 
-class Swish(nn.Module):
-    def forward(self, x):
-        return x * x.sigmoid()
-
-
-class FastGLU(nn.Module):
-    def __init__(self, in_features: int) -> None:
-        super(FastGLU, self).__init__()
-
-        self.in_features = in_features
-        self.linear = Linear(in_features, in_features << 1)
-
-    def forward(self, x: Tensor) -> Tensor:
-        """
-        :param x: B x C x D x T
-        :return:
-        """
-        output = self.linear(x)
-        return output[:, :self.in_features, :] * output[:, self.in_features:, :].sigmoid()
-
-
-class DepthwiseConv1d(nn.Module):
-    def __init__(self, num_channels: int, kernel_size: int) -> None:
-        super(DepthwiseConv1d, self).__init__()
-        self.conv = nn.Conv1d(num_channels, num_channels, kernel_size=kernel_size, groups=num_channels)
-
-    def forward(self, x: Tensor) -> Tensor:
-        return self.conv(x)
-
-
-class PointwiseConv1d(nn.Module):
-    def __init__(self, in_channels: int, out_channels: int) -> None:
-        super(PointwiseConv1d, self).__init__()
-        self.conv = nn.Conv1d(in_channels, out_channels, kernel_size=1)
-
-    def forward(self, x: Tensor) -> Tensor:
-        return self.conv(x)
-
-
 class LayerNorm(nn.Module):
     """ Wrapper class of torch.nn.LayerNorm """
     def __init__(self, dim: int, eps: float = 1e-6) -> None:
@@ -65,7 +26,7 @@ class LayerNorm(nn.Module):
         self.beta = nn.Parameter(torch.zeros(dim))
         self.eps = eps
 
-    def forward(self, z: torch.Tensor) -> torch.Tensor:
+    def forward(self, z: Tensor) -> Tensor:
         mean = z.mean(dim=-1, keepdim=True)
         std = z.std(dim=-1, keepdim=True)
         output = (z - mean) / (std + self.eps)
@@ -96,11 +57,11 @@ class View(nn.Module):
         self.shape = shape
         self.contiguous = contiguous
 
-    def forward(self, inputs):
+    def forward(self, x: Tensor) -> Tensor:
         if self.contiguous:
-            inputs = inputs.contiguous()
+            x = x.contiguous()
 
-        return inputs.view(*self.shape)
+        return x.view(*self.shape)
 
 
 class Transpose(nn.Module):
@@ -109,5 +70,5 @@ class Transpose(nn.Module):
         super(Transpose, self).__init__()
         self.shape = shape
 
-    def forward(self, inputs: Tensor):
-        return inputs.transpose(*self.shape)
+    def forward(self, x: Tensor) -> Tensor:
+        return x.transpose(*self.shape)

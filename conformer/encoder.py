@@ -13,8 +13,33 @@
 # limitations under the License.
 
 import torch.nn as nn
+from torch import Tensor
+from conformer.wrapper import LayerNorm
+from conformer.attention import (
+    FeedForwardNet,
+    MultiHeadAttention,
+    ConformerConvModule,
+)
+
+
+class ConformerBlock(nn.Module):
+    def __init__(self, encoder_dim: int = 512):
+        super(ConformerBlock, self).__init__()
+        self.feed_forward1 = FeedForwardNet()
+        self.attention = MultiHeadAttention()
+        self.conv = ConformerConvModule()
+        self.feed_forward2 = FeedForwardNet()
+        self.layer_norm = LayerNorm(encoder_dim)
+
+    def forward(self, x: Tensor) -> Tensor:
+        x = 0.5 * self.feed_forward1(x) + x
+        x = self.attention(x) + x
+        x = self.conv(x) + x
+        x = 0.5 * self.feed_forward2(x) + x
+        return self.layer_norm(x)
 
 
 class ConformerEncoder(nn.Module):
-    def __init__(self):
+    def __init__(self, encoder_dim: int, num_layers: int):
         super(ConformerEncoder, self).__init__()
+        self.layers = [ConformerBlock(encoder_dim=encoder_dim) for _ in range(num_layers)]

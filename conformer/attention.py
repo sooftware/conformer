@@ -18,12 +18,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import Tensor
 from typing import Tuple, Optional
-from conformer.submodules import Linear, LayerNorm, PointwiseConv1d, FastGLU, DepthwiseConv1d, Swish, Transpose
-
-
-class FeedForwardNet(nn.Module):
-    def __init__(self):
-        super(FeedForwardNet, self).__init__()
+from conformer.wrapper import Linear
 
 
 class ScaledDotProductAttention(nn.Module):
@@ -88,7 +83,7 @@ class MultiHeadAttention(nn.Module):
     def __init__(self, d_model: int = 512, num_heads: int = 8) -> None:
         super(MultiHeadAttention, self).__init__()
 
-        assert d_model % num_heads == 0, "hidden_dim % num_heads should be zero."
+        assert d_model % num_heads == 0, "d_model % num_heads should be zero."
 
         self.d_head = int(d_model / num_heads)
         self.num_heads = num_heads
@@ -117,30 +112,3 @@ class MultiHeadAttention(nn.Module):
         context = context.permute(1, 2, 0, 3).contiguous().view(batch_size, -1, self.num_heads * self.d_head)
 
         return context
-
-
-class ConformerConvModule(nn.Module):
-    def __init__(
-            self,
-            in_channels: int,
-            kernel_size: int = 32,
-            expansion_factor: int = 2,
-            dropout_p: float = 0.1,
-    ) -> None:
-        super(ConformerConvModule, self).__init__()
-        inner_channel = in_channels * expansion_factor
-        self.sequential = nn.Sequential(
-            LayerNorm(in_channels),
-            Transpose(),
-            PointwiseConv1d(in_channels, inner_channel),
-            FastGLU(inner_channel),
-            DepthwiseConv1d(inner_channel, kernel_size=kernel_size),
-            nn.BatchNorm1d(inner_channel),
-            Swish(),
-            PointwiseConv1d(inner_channel, in_channels),
-            Transpose(),
-            nn.Dropout(p=dropout_p),
-        )
-
-    def forward(self, x: Tensor) -> Tensor:
-        return self.sequential(x)

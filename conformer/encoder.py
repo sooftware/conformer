@@ -14,32 +14,151 @@
 
 import torch.nn as nn
 from torch import Tensor
-from conformer.wrapper import LayerNorm
-from conformer.attention import (
-    FeedForwardNet,
-    MultiHeadAttention,
-    ConformerConvModule,
-)
+from typing import Tuple
+
+from conformer.conv import ConformerConvModule, Conv2dSubampling
+from conformer.feed_forward import FeedForwardNet
+from conformer.wrapper import LayerNorm, Linear
+from conformer.attention import MultiHeadedSelfAttentionModule
 
 
 class ConformerBlock(nn.Module):
-    def __init__(self, encoder_dim: int = 512):
+    """
+    Conformer block contains two Feed Forward modules sandwiching the Multi-Headed Self-Attention module
+    and the Convolution module. This sandwich structure is inspired by Macaron-Net, which proposes replacing
+    the original feed-forward layer in the Transformer block into two half-step feed-forward layers,
+    one before the attention layer and one after.
+
+    Args:
+        encoder_dim (int, optional): Dimension of conformer encoder
+        num_attention_heads (int, optional): Number of attention heads
+        feed_forward_expansion_factor (int, optional): Expansion factor of feed forward module
+        conv_expansion_factor (int, optional): Expansion factor of conformer convolution module
+        feed_forward_dropout_p (float, optional): Probability of feed forward module dropout
+        attention_dropout_p (float, optional): Probability of attention module dropout
+        conv_dropout_p (float, optional): Probability of conformer convolution module dropout
+        conv_kernel_size (int or tuple, optional): Size of the convolving kernel
+        half_step_residual (bool): Flag indication whether to use half step residual or not
+
+    Inputs: inputs
+        - **inputs** (batch, time, dim): Tensor containing input vector
+
+    Returns: outputs
+        - **outputs** (batch, time, dim): Tensor produces by conformer block.
+    """
+    def __init__(
+            self,
+            encoder_dim: int = 512,
+            num_attention_heads: int = 8,
+            feed_forward_expansion_factor: int = 4,
+            conv_expansion_factor: int = 2,
+            feed_forward_dropout_p: float = 0.1,
+            attention_dropout_p: float = 0.1,
+            conv_dropout_p: float = 0.1,
+            conv_kernel_size: int = 31,
+            half_step_residual: bool = True,
+    ):
         super(ConformerBlock, self).__init__()
-        self.feed_forward1 = FeedForwardNet()
-        self.attention = MultiHeadAttention()
-        self.conv = ConformerConvModule()
-        self.feed_forward2 = FeedForwardNet()
+        if half_step_residual:
+            self.feed_forward_residual_factor = 0.5
+        else:
+            self.feed_forward_residual_factor = 1
+
+        self.feed_forward_module1 = FeedForwardNet(
+            encoder_dim=encoder_dim,
+            expansion_factor=feed_forward_expansion_factor,
+            dropout_p=feed_forward_dropout_p,
+        )
+        self.multi_headed_self_attention = MultiHeadedSelfAttentionModule(
+            d_model=encoder_dim,
+            num_heads=num_attention_heads,
+            dropout_p=attention_dropout_p,
+        )
+        self.conformer_conv_module = ConformerConvModule(
+            in_channels=encoder_dim,
+            kernel_size=conv_kernel_size,
+            expansion_factor=conv_expansion_factor,
+            dropout_p=conv_dropout_p,
+        )
+        self.feed_forward_module2 = FeedForwardNet(
+            encoder_dim=encoder_dim,
+            expansion_factor=feed_forward_expansion_factor,
+            dropout_p=feed_forward_dropout_p,
+        )
         self.layer_norm = LayerNorm(encoder_dim)
 
-    def forward(self, x: Tensor) -> Tensor:
-        x = 0.5 * self.feed_forward1(x) + x
-        x = self.attention(x) + x
-        x = self.conv(x) + x
-        x = 0.5 * self.feed_forward2(x) + x
-        return self.layer_norm(x)
+    def forward(self, inputs: Tensor) -> Tensor:
+        inputs = inputs + self.feed_forward_module1(inputs) * self.feed_forward_residual_factor
+        inputs = inputs + self.multi_headed_self_attention(inputs)
+        inputs = inputs + self.conformer_conv_module(inputs)
+        inputs = inputs + self.feed_forward_module2(inputs) * self.feed_forward_residual_factor
+        return self.layer_norm(inputs)
 
 
 class ConformerEncoder(nn.Module):
-    def __init__(self, encoder_dim: int, num_layers: int):
+    """
+    Conformer encoder first processes the input with a convolution subsampling layer and then
+    with a number of conformer blocks.
+
+    Args:
+        input_dim (int, optional): Dimension of input vector
+        encoder_dim (int, optional): Dimension of conformer encoder
+        num_layers (int, optional): Number of conformer blocks
+        num_attention_heads (int, optional): Number of attention heads
+        feed_forward_expansion_factor (int, optional): Expansion factor of feed forward module
+        conv_expansion_factor (int, optional): Expansion factor of conformer convolution module
+        feed_forward_dropout_p (float, optional): Probability of feed forward module dropout
+        attention_dropout_p (float, optional): Probability of attention module dropout
+        conv_dropout_p (float, optional): Probability of conformer convolution module dropout
+        conv_kernel_size (int or tuple, optional): Size of the convolving kernel
+        half_step_residual (bool): Flag indication whether to use half step residual or not
+
+    Inputs: inputs, input_lengths
+        - **inputs** (batch, time, dim): Tensor containing input vector
+        - **input_lengths** (batch): list of sequence input lengths
+
+    Returns: outputs, output_lengths
+        - **outputs** (batch, out_channels, time): Tensor produces by conformer encoder.
+        - **output_lengths** (batch): list of sequence output lengths
+    """
+    def __init__(
+            self,
+            input_dim: int = 80,
+            encoder_dim: int = 512,
+            num_layers: int = 17,
+            num_attention_heads: int = 8,
+            feed_forward_expansion_factor: int = 4,
+            conv_expansion_factor: int = 2,
+            input_dropout_p: float = 0.1,
+            feed_forward_dropout_p: float = 0.1,
+            attention_dropout_p: float = 0.1,
+            conv_dropout_p: float = 0.1,
+            conv_kernel_size: int = 31,
+            half_step_residual: bool = True,
+    ):
         super(ConformerEncoder, self).__init__()
-        self.layers = [ConformerBlock(encoder_dim=encoder_dim) for _ in range(num_layers)]
+        self.conv_subsample = Conv2dSubampling(in_channels=1, out_channels=encoder_dim)
+        self.input_projection = nn.Sequential(
+            Linear(encoder_dim * (((input_dim - 1) // 2 - 1) // 2), encoder_dim),
+            nn.Dropout(p=input_dropout_p),
+        )
+        self.layers = [ConformerBlock(
+            encoder_dim=encoder_dim,
+            num_attention_heads=num_attention_heads,
+            feed_forward_expansion_factor=feed_forward_expansion_factor,
+            conv_expansion_factor=conv_expansion_factor,
+            feed_forward_dropout_p=feed_forward_dropout_p,
+            attention_dropout_p=attention_dropout_p,
+            conv_dropout_p=conv_dropout_p,
+            conv_kernel_size=conv_kernel_size,
+            half_step_residual=half_step_residual,
+        ) for _ in range(num_layers)]
+
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        outputs, output_lengths = self.conv_subsample(inputs, input_lengths)
+        outputs = self.input_projection(outputs)
+
+        for layer in self.layers:
+            outputs = layer(outputs)
+
+        return outputs, output_lengths

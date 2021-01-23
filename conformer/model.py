@@ -14,39 +14,67 @@
 
 import torch.nn as nn
 from torch import Tensor
-
-from conformer.conv import Conv2dSubampling
-from conformer.decoder import ConformerDecoder
+from typing import Tuple
 from conformer.encoder import ConformerEncoder
-from conformer.wrapper import Linear
 
 
 class Conformer(nn.Module):
     """
     Conformer: Convolution-augmented Transformer for Speech Recognition
-    - https://arxiv.org/pdf/2005.08100.pdf
+    The paper used a one-lstm Transducer decoder, currently still only implemented
+    the conformer encoder shown in the paper.
+
+    Args:
+        input_dim (int, optional): Dimension of input vector
+        encoder_dim (int, optional): Dimension of conformer encoder
+        num_layers (int, optional): Number of conformer blocks
+        num_attention_heads (int, optional): Number of attention heads
+        feed_forward_expansion_factor (int, optional): Expansion factor of feed forward module
+        conv_expansion_factor (int, optional): Expansion factor of conformer convolution module
+        feed_forward_dropout_p (float, optional): Probability of feed forward module dropout
+        attention_dropout_p (float, optional): Probability of attention module dropout
+        conv_dropout_p (float, optional): Probability of conformer convolution module dropout
+        conv_kernel_size (int or tuple, optional): Size of the convolving kernel
+        half_step_residual (bool): Flag indication whether to use half step residual or not
+
+    Inputs: inputs, input_lengths
+        - **inputs** (batch, time, dim): Tensor containing input vector
+        - **input_lengths** (batch): list of sequence input lengths
+
+    Returns: outputs, output_lengths
+        - **outputs** (batch, out_channels, time): Tensor produces by conformer.
+        - **output_lengths** (batch): list of sequence output lengths
     """
     def __init__(
             self,
             input_dim: int = 80,
             encoder_dim: int = 512,
             num_layers: int = 17,
-            dropout_p: float = 0.1,
+            num_attention_heads: int = 8,
+            feed_forward_expansion_factor: int = 4,
+            conv_expansion_factor: int = 2,
+            input_dropout_p: float = 0.1,
+            feed_forward_dropout_p: float = 0.1,
+            attention_dropout_p: float = 0.1,
+            conv_dropout_p: float = 0.1,
+            conv_kernel_size: int = 31,
+            half_step_residual: bool = True,
     ) -> None:
         super(Conformer, self).__init__()
+        self.encoder = ConformerEncoder(
+            input_dim=input_dim,
+            encoder_dim=encoder_dim,
+            num_layers=num_layers,
+            num_attention_heads=num_attention_heads,
+            feed_forward_expansion_factor=feed_forward_expansion_factor,
+            conv_expansion_factor=conv_expansion_factor,
+            input_dropout_p=input_dropout_p,
+            feed_forward_dropout_p=feed_forward_dropout_p,
+            attention_dropout_p=attention_dropout_p,
+            conv_dropout_p=conv_dropout_p,
+            conv_kernel_size=conv_kernel_size,
+            half_step_residual=half_step_residual,
+        )
 
-        self.conv_subsample = Conv2dSubampling(in_channels=1, out_channels=encoder_dim)
-        self.input_projection = Linear(encoder_dim * (((input_dim - 1) // 2 - 1) // 2), encoder_dim)
-        self.input_dropout = nn.Dropout(p=dropout_p)
-
-        self.encoder = ConformerEncoder(encoder_dim, num_layers)
-        self.decoder = ConformerDecoder()
-
-    def forward(self, inputs: Tensor, input_lengths: Tensor):
-        """
-        x: B x T x D
-        """
-        inputs, _ = self.extractor(inputs.transpose(1, 2), input_lengths)
-        inputs = self.input_dropout(self.input_projection(inputs.transpose(1, 2)))
-
-        encoder_outputs = self.encoder(inputs)
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        return self.encoder(inputs, input_lengths)

@@ -17,6 +17,9 @@
      <a href="https://github.com/sooftware/conformer">
           <img src="http://img.shields.io/badge/build-passing-success"> 
      </a>
+     <a href="https://sooftware.github.io/conformer">
+          <img src="http://img.shields.io/badge/docs-passing-success"> 
+     </a>
 
   
 Transformer models are good at capturing content-based global interactions, while CNNs exploit local features effectively. Conformer combine convolution neural networks and transformers to model both local and global dependencies of an audio sequence in a parameter-efficient way. Conformer significantly outperforms the previous Transformer and CNN based models achieving state-of-the-art accuracies. In the paper, conformer used a one-lstm Transducer decoder, currently still only implemented the conformer encoder shown in the paper.

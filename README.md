@@ -1,6 +1,6 @@
 <p  align="center"><img src="https://user-images.githubusercontent.com/42150335/105607164-aa878e00-5de0-11eb-8474-a12dd6ac919b.png" height=100>
   
-<p  align="center">An Apache 2.0 PyTorch implementation of Conformer: Convolution-augmented Transformer for Speech Recognition.
+<p  align="center">PyTorch implementation of Conformer: Convolution-augmented Transformer for Speech Recognition.
 
 ***
 

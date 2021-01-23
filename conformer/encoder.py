@@ -88,10 +88,10 @@ class ConformerBlock(nn.Module):
         self.layer_norm = LayerNorm(encoder_dim)
 
     def forward(self, inputs: Tensor) -> Tensor:
-        inputs = inputs + self.feed_forward_module1(inputs) * self.feed_forward_residual_factor
-        inputs = inputs + self.multi_headed_self_attention(inputs)
-        inputs = inputs + self.conformer_conv_module(inputs)
-        inputs = inputs + self.feed_forward_module2(inputs) * self.feed_forward_residual_factor
+        inputs += self.feed_forward_module1(inputs) * self.feed_forward_residual_factor
+        inputs += self.multi_headed_self_attention(inputs)
+        inputs += self.conformer_conv_module(inputs)
+        inputs += self.feed_forward_module2(inputs) * self.feed_forward_residual_factor
         return self.layer_norm(inputs)
 
 

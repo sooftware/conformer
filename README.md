@@ -1,9 +1,24 @@
-# Conformer: Convolution-augmented Transformer for Speech Recognition
-PyTorch implementation of [Conformer: Convolution-augmented Transformer for Speech Recognition](https://arxiv.org/pdf/2005.08100.pdf).
-    
-<img src="https://user-images.githubusercontent.com/42150335/105602364-aeafad80-5dd8-11eb-8886-b75e2d9d31f4.png" height=600>
+<p  align="center"><img src="https://user-images.githubusercontent.com/42150335/105607164-aa878e00-5de0-11eb-8474-a12dd6ac919b.png" height=100>
+  
+<p  align="center">An Apache 2.0 PyTorch implementation of Conformer: Convolution-augmented Transformer for Speech Recognition.
+
+***
+
+<p  align="center"> 
+     <a href="https://github.com/sooftware/jasper/blob/main/LICENSE">
+          <img src="http://img.shields.io/badge/license-Apache--2.0-informational"> 
+     </a>
+     <a href="https://github.com/pytorch/pytorch">
+          <img src="http://img.shields.io/badge/framework-PyTorch-informational"> 
+     </a>
+     <a href="https://www.python.org/dev/peps/pep-0008/">
+          <img src="http://img.shields.io/badge/codestyle-PEP--8-informational"> 
+     </a>
+
   
 Transformer models are good at capturing content-based global interactions, while CNNs exploit local features effectively. Conformer combine convolution neural networks and transformers to model both local and global dependencies of an audio sequence in a parameter-efficient way. Conformer significantly outperforms the previous Transformer and CNN based models achieving state-of-the-art accuracies. In the paper, conformer used a one-lstm Transducer decoder, currently still only implemented the conformer encoder shown in the paper.
+
+<img src="https://user-images.githubusercontent.com/42150335/105602364-aeafad80-5dd8-11eb-8886-b75e2d9d31f4.png" height=600>
   
 ## Installation
 This project recommends Python 3.7 or higher.

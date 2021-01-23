@@ -12,9 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import torch.nn as nn
+from distutils.core import setup
 
-
-class ConformerDecoder(nn.Module):
-    def __init__(self):
-        super(ConformerDecoder, self).__init__()
+setup(
+    name='conformer',
+    version='latest',
+    description='Convolution-augmented Transformer for Speech Recognition',
+    author='Soohwan Kim',
+    author_email='sh951011@gmail.com',
+    url='https://github.com/sooftware/conformer',
+    install_requires=[
+        'torch>=1.4.0',
+        'numpy',
+    ],
+    keywords=['asr', 'speech_recognition', 'conformer', 'end-to-end'],
+    python_requires='>=3.7'
+)

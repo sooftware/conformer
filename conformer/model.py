@@ -16,6 +16,7 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
 from conformer.encoder import ConformerEncoder
+from conformer.wrapper import Linear
 
 
 class Conformer(nn.Module):
@@ -25,6 +26,7 @@ class Conformer(nn.Module):
     the conformer encoder shown in the paper.
 
     Args:
+        num_classes (int): Number of classification classes
         input_dim (int, optional): Dimension of input vector
         encoder_dim (int, optional): Dimension of conformer encoder
         num_layers (int, optional): Number of conformer blocks
@@ -47,6 +49,7 @@ class Conformer(nn.Module):
     """
     def __init__(
             self,
+            num_classes: int,
             input_dim: int = 80,
             encoder_dim: int = 512,
             num_layers: int = 17,
@@ -75,6 +78,8 @@ class Conformer(nn.Module):
             conv_kernel_size=conv_kernel_size,
             half_step_residual=half_step_residual,
         )
+        self.fc = Linear(encoder_dim, num_classes, bias=False)
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
-        return self.encoder(inputs, input_lengths)
+        outputs, output_lengths = self.encoder(inputs, input_lengths)
+        return self.fc(outputs).log_softmax(dim=-1)

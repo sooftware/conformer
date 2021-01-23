@@ -1,0 +1,557 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Modules &mdash; conformer latest documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Submodules" href="Submodules.html" />
+    <link rel="prev" title="Model" href="Model.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> conformer
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">PACKAGE</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-conformer.attention">Attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-conformer.conv">Convolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-conformer.feed_forward">Feed Forward</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Submodules.html">Submodules</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">conformer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Modules</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/Modules.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="modules">
+<h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-conformer.attention">
+<span id="attention"></span><h2>Attention<a class="headerlink" href="#module-conformer.attention" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="conformer.attention.MultiHeadedSelfAttentionModule">
+<em class="property">class </em><code class="sig-prename descclassname">conformer.attention.</code><code class="sig-name descname">MultiHeadedSelfAttentionModule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d_model</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">num_heads</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">dropout_p</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conformer/attention.html#MultiHeadedSelfAttentionModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conformer.attention.MultiHeadedSelfAttentionModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conformer employ multi-headed self-attention (MHSA) while integrating an important technique from Transformer-XL,
+the relative sinusoidal positional encoding scheme. The relative positional encoding allows the self-attention
+module to generalize better on different input length and the resulting encoder is more robust to the variance of
+the utterance length. Conformer use prenorm residual units with dropout which helps training
+and regularizing deeper models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d_model</strong> (<em>int</em>) – The dimension of model</p></li>
+<li><p><strong>num_heads</strong> (<em>int</em>) – The number of attention heads.</p></li>
+<li><p><strong>dropout_p</strong> (<em>float</em>) – probability of dropout</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs, mask</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (batch, time, dim): Tensor containing input vector</p></li>
+<li><p><strong>mask</strong> (batch, 1, time2) or (batch, time1, time2): Tensor containing indices to be masked</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Tensor produces by relative multi headed self attention module.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>outputs</strong> (batch, time, dim)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="conformer.attention.MultiHeadedSelfAttentionModule.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">torch.Tensor</span></em>, <em class="sig-param"><span class="n">mask</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>torch.Tensor<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conformer/attention.html#MultiHeadedSelfAttentionModule.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conformer.attention.MultiHeadedSelfAttentionModule.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="conformer.attention.PositionalEncoding">
+<em class="property">class </em><code class="sig-prename descclassname">conformer.attention.</code><code class="sig-name descname">PositionalEncoding</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d_model</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">max_len</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">5000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conformer/attention.html#PositionalEncoding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conformer.attention.PositionalEncoding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Positional Encoding proposed in “Attention Is All You Need”.
+Since transformer contains no recurrence and no convolution, in order for the model to make
+use of the order of the sequence, we must add some positional information.</p>
+<dl class="simple">
+<dt>“Attention Is All You Need” use sine and cosine functions of different frequencies:</dt><dd><p>PE_(pos, 2i)    =  sin(pos / power(10000, 2i / d_model))
+PE_(pos, 2i+1)  =  cos(pos / power(10000, 2i / d_model))</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="conformer.attention.PositionalEncoding.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">length</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/conformer/attention.html#PositionalEncoding.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conformer.attention.PositionalEncoding.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="conformer.attention.RelativeMultiHeadAttention">
+<em class="property">class </em><code class="sig-prename descclassname">conformer.attention.</code><code class="sig-name descname">RelativeMultiHeadAttention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d_model</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">num_heads</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">16</span></em>, <em class="sig-param"><span class="n">dropout_p</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conformer/attention.html#RelativeMultiHeadAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conformer.attention.RelativeMultiHeadAttention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multi-head attention with relative positional encoding.
+This concept was proposed in the “Transformer-XL: Attentive Language Models Beyond a Fixed-Length Context”</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d_model</strong> (<em>int</em>) – The dimension of model</p></li>
+<li><p><strong>num_heads</strong> (<em>int</em>) – The number of attention heads.</p></li>
+<li><p><strong>dropout_p</strong> (<em>float</em>) – probability of dropout</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: query, key, value, pos_embedding, mask</dt><dd><ul class="simple">
+<li><p><strong>query</strong> (batch, time, dim): Tensor containing query vector</p></li>
+<li><p><strong>key</strong> (batch, time, dim): Tensor containing key vector</p></li>
+<li><p><strong>value</strong> (batch, time, dim): Tensor containing value vector</p></li>
+<li><p><strong>pos_embedding</strong> (batch, time, dim): Positional embedding tensor</p></li>
+<li><p><strong>mask</strong> (batch, 1, time2) or (batch, time1, time2): Tensor containing indices to be masked</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Tensor produces by relative multi head attention module.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>outputs</strong></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="conformer.attention.RelativeMultiHeadAttention.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query</span><span class="p">:</span> <span class="n">torch.Tensor</span></em>, <em class="sig-param"><span class="n">key</span><span class="p">:</span> <span class="n">torch.Tensor</span></em>, <em class="sig-param"><span class="n">value</span><span class="p">:</span> <span class="n">torch.Tensor</span></em>, <em class="sig-param"><span class="n">pos_embedding</span><span class="p">:</span> <span class="n">torch.Tensor</span></em>, <em class="sig-param"><span class="n">mask</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>torch.Tensor<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/conformer/attention.html#RelativeMultiHeadAttention.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conformer.attention.RelativeMultiHeadAttention.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-conformer.conv">
+<span id="convolution"></span><h2>Convolution<a class="headerlink" href="#module-conformer.conv" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="conformer.conv.ConformerConvModule">
+<em class="property">class </em><code class="sig-prename descclassname">conformer.conv.</code><code class="sig-name descname">ConformerConvModule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_channels</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">kernel_size</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">31</span></em>, <em class="sig-param"><span class="n">expansion_factor</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="n">dropout_p</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conformer/conv.html#ConformerConvModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conformer.conv.ConformerConvModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conformer convolution module starts with a pointwise convolution and a gated linear unit (GLU).
+This is followed by a single 1-D depthwise convolution layer. Batchnorm is  deployed just after the convolution
+to aid training deep models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_channels</strong> (<em>int</em>) – Number of channels in the input</p></li>
+<li><p><strong>kernel_size</strong> (<em>int</em><em> or </em><em>tuple</em><em>, </em><em>optional</em>) – Size of the convolving kernel Default: 31</p></li>
+<li><p><strong>dropout_p</strong> (<em>float</em><em>, </em><em>optional</em>) – probability of dropout</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs</dt><dd><p>inputs (batch, time, dim): Tensor contains input sequences</p>
+</dd>
+<dt>Outputs: outputs</dt><dd><p>outputs (batch, time, dim): Tensor produces by conformer convolution module.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="conformer.conv.ConformerConvModule.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">torch.Tensor</span></em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/conformer/conv.html#ConformerConvModule.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conformer.conv.ConformerConvModule.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="conformer.conv.Conv2dSubampling">
+<em class="property">class </em><code class="sig-prename descclassname">conformer.conv.</code><code class="sig-name descname">Conv2dSubampling</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_channels</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">out_channels</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conformer/conv.html#Conv2dSubampling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conformer.conv.Conv2dSubampling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convolutional 2D subsampling (to 1/4 length)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_channels</strong> (<em>int</em>) – Number of channels in the input image</p></li>
+<li><p><strong>out_channels</strong> (<em>int</em>) – Number of channels produced by the convolution</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (batch, time, dim): Tensor containing sequence of inputs</p></li>
+</ul>
+</dd>
+<dt>Returns: outputs, output_lengths</dt><dd><ul class="simple">
+<li><p><strong>outputs</strong> (batch, time, dim): Tensor produced by the convolution</p></li>
+<li><p><strong>output_lengths</strong> (batch): list of sequence output lengths</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="conformer.conv.Conv2dSubampling.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">torch.Tensor</span></em>, <em class="sig-param"><span class="n">input_lengths</span><span class="p">:</span> <span class="n">torch.Tensor</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>torch.Tensor<span class="p">, </span>torch.Tensor<span class="p">]</span><a class="reference internal" href="_modules/conformer/conv.html#Conv2dSubampling.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conformer.conv.Conv2dSubampling.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="conformer.conv.DepthwiseConv1d">
+<em class="property">class </em><code class="sig-prename descclassname">conformer.conv.</code><code class="sig-name descname">DepthwiseConv1d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_channels</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">out_channels</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">kernel_size</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">stride</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">padding</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">bias</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conformer/conv.html#DepthwiseConv1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conformer.conv.DepthwiseConv1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>When groups == in_channels and out_channels == K * in_channels, where K is a positive integer,
+this operation is termed in literature as depthwise convolution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_channels</strong> (<em>int</em>) – Number of channels in the input</p></li>
+<li><p><strong>out_channels</strong> (<em>int</em>) – Number of channels produced by the convolution</p></li>
+<li><p><strong>kernel_size</strong> (<em>int</em><em> or </em><em>tuple</em>) – Size of the convolving kernel</p></li>
+<li><p><strong>stride</strong> (<em>int</em><em>, </em><em>optional</em>) – Stride of the convolution. Default: 1</p></li>
+<li><p><strong>padding</strong> (<em>int</em><em> or </em><em>tuple</em><em>, </em><em>optional</em>) – Zero-padding added to both sides of the input. Default: 0</p></li>
+<li><p><strong>bias</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, adds a learnable bias to the output. Default: True</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (batch, in_channels, time): Tensor containing input vector</p></li>
+</ul>
+</dd>
+<dt>Returns: outputs</dt><dd><ul class="simple">
+<li><p><strong>outputs</strong> (batch, out_channels, time): Tensor produces by depthwise 1-D convolution.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="conformer.conv.DepthwiseConv1d.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">torch.Tensor</span></em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/conformer/conv.html#DepthwiseConv1d.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conformer.conv.DepthwiseConv1d.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="conformer.conv.PointwiseConv1d">
+<em class="property">class </em><code class="sig-prename descclassname">conformer.conv.</code><code class="sig-name descname">PointwiseConv1d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">in_channels</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">out_channels</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">stride</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">padding</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">bias</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conformer/conv.html#PointwiseConv1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conformer.conv.PointwiseConv1d" title="Permalink to this definition">¶</a></dt>
+<dd><p>When kernel size == 1 conv1d, this operation is termed in literature as pointwise convolution.
+This operation often used to match dimensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_channels</strong> (<em>int</em>) – Number of channels in the input</p></li>
+<li><p><strong>out_channels</strong> (<em>int</em>) – Number of channels produced by the convolution</p></li>
+<li><p><strong>stride</strong> (<em>int</em><em>, </em><em>optional</em>) – Stride of the convolution. Default: 1</p></li>
+<li><p><strong>padding</strong> (<em>int</em><em> or </em><em>tuple</em><em>, </em><em>optional</em>) – Zero-padding added to both sides of the input. Default: 0</p></li>
+<li><p><strong>bias</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, adds a learnable bias to the output. Default: True</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (batch, in_channels, time): Tensor containing input vector</p></li>
+</ul>
+</dd>
+<dt>Returns: outputs</dt><dd><ul class="simple">
+<li><p><strong>outputs</strong> (batch, out_channels, time): Tensor produces by pointwise 1-D convolution.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="conformer.conv.PointwiseConv1d.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">torch.Tensor</span></em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/conformer/conv.html#PointwiseConv1d.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conformer.conv.PointwiseConv1d.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-conformer.feed_forward">
+<span id="feed-forward"></span><h2>Feed Forward<a class="headerlink" href="#module-conformer.feed_forward" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="conformer.feed_forward.FeedForwardNet">
+<em class="property">class </em><code class="sig-prename descclassname">conformer.feed_forward.</code><code class="sig-name descname">FeedForwardNet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">encoder_dim</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">512</span></em>, <em class="sig-param"><span class="n">expansion_factor</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">4</span></em>, <em class="sig-param"><span class="n">dropout_p</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/conformer/feed_forward.html#FeedForwardNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conformer.feed_forward.FeedForwardNet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conformer Feed Forward Module follow pre-norm residual units and apply layer normalization within the residual unit
+and on the input before the first linear layer. This module also apply Swish activation and dropout, which helps
+regularizing the network.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>encoder_dim</strong> (<em>int</em>) – Dimension of conformer encoder</p></li>
+<li><p><strong>expansion_factor</strong> (<em>int</em>) – Expansion factor of feed forward module.</p></li>
+<li><p><strong>dropout_p</strong> (<em>float</em>) – Ratio of dropout</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Inputs: inputs</dt><dd><ul class="simple">
+<li><p><strong>inputs</strong> (batch, time, dim): Tensor contains input sequences</p></li>
+</ul>
+</dd>
+<dt>Outputs: outputs</dt><dd><ul class="simple">
+<li><p><strong>outputs</strong> (batch, time, dim): Tensor produces by feed forward module.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="conformer.feed_forward.FeedForwardNet.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">torch.Tensor</span></em><span class="sig-paren">)</span> &#x2192; torch.Tensor<a class="reference internal" href="_modules/conformer/feed_forward.html#FeedForwardNet.forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#conformer.feed_forward.FeedForwardNet.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="Submodules.html" class="btn btn-neutral float-right" title="Submodules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="Model.html" class="btn btn-neutral float-left" title="Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Soohwan Kim.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

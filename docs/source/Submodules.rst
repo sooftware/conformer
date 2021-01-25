@@ -8,8 +8,14 @@ Activation
 .. automodule:: conformer.activation
     :members:
 
-Wrapper
+Modules
 --------------------------------------------
 
-.. automodule:: conformer.wrapper
+.. automodule:: conformer.modules
+    :members:
+
+Embedding
+--------------------------------------------
+
+.. automodule:: conformer.embedding
     :members:

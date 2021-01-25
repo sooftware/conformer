@@ -16,10 +16,17 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
 
-from conformer.conv import ConformerConvModule, Conv2dSubampling
 from conformer.feed_forward import FeedForwardNet
-from conformer.modules import LayerNorm, Linear
 from conformer.attention import MultiHeadedSelfAttentionModule
+from conformer.conv import (
+    ConformerConvModule,
+    Conv2dSubampling,
+)
+from conformer.modules import (
+    ResidualConnection,
+    LayerNorm,
+    Linear,
+)
 
 
 class ConformerBlock(nn.Module):

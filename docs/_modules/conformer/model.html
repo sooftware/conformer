@@ -86,7 +86,7 @@
               <p class="caption"><span class="caption-text">PACKAGE</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Model.html">Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modules.html">Conformer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Submodules.html">Submodules</a></li>
 </ul>
 
@@ -171,7 +171,9 @@
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
 <span class="kn">from</span> <span class="nn">conformer.encoder</span> <span class="kn">import</span> <span class="n">ConformerEncoder</span>
+<span class="kn">from</span> <span class="nn">conformer.modules</span> <span class="kn">import</span> <span class="n">Linear</span>
 
 
 <div class="viewcode-block" id="Conformer"><a class="viewcode-back" href="../../Model.html#conformer.model.Conformer">[docs]</a><span class="k">class</span> <span class="nc">Conformer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -181,6 +183,7 @@
 <span class="sd">    the conformer encoder shown in the paper.</span>
 
 <span class="sd">    Args:</span>
+<span class="sd">        num_classes (int): Number of classification classes</span>
 <span class="sd">        input_dim (int, optional): Dimension of input vector</span>
 <span class="sd">        encoder_dim (int, optional): Dimension of conformer encoder</span>
 <span class="sd">        num_layers (int, optional): Number of conformer blocks</span>
@@ -203,6 +206,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
+            <span class="n">num_classes</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
             <span class="n">input_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">80</span><span class="p">,</span>
             <span class="n">encoder_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">512</span><span class="p">,</span>
             <span class="n">num_layers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">17</span><span class="p">,</span>
@@ -231,9 +235,11 @@
             <span class="n">conv_kernel_size</span><span class="o">=</span><span class="n">conv_kernel_size</span><span class="p">,</span>
             <span class="n">half_step_residual</span><span class="o">=</span><span class="n">half_step_residual</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="n">encoder_dim</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Conformer.forward"><a class="viewcode-back" href="../../Model.html#conformer.model.Conformer.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">)</span></div></div>
+        <span class="n">outputs</span><span class="p">,</span> <span class="n">output_lengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">input_lengths</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

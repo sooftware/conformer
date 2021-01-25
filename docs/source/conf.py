@@ -18,7 +18,6 @@ sys.path.append(os.path.abspath('..'))
 import sphinx_rtd_theme
 
 
-
 # -- Project information -----------------------------------------------------
 
 project = 'conformer'
@@ -54,6 +53,9 @@ extensions = [
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
+source_suffix = ['.rst', '.md']
+master_doc = 'index'
+language = None
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -66,9 +68,29 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
+
+pygments_style = 'sphinx'
 html_theme = 'sphinx_rtd_theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+htmlhelp_basename = 'Conformer'
+latex_elements = {
+}
+latex_documents = [
+    (master_doc, 'Conformer.tex', 'Conformer Documentation',
+     'Sooftware', 'manual'),
+]
+man_pages = [
+    (master_doc, 'Conformer', 'Conformer Documentation',
+     [author], 1)
+]
+texinfo_documents = [
+    (master_doc, 'Conformer', 'Conformer Documentation', author),
+]
+epub_title = project
+epub_exclude_files = ['search.html']
+intersphinx_mapping = {'https://docs.python.org/': None}
+todo_include_todos = True

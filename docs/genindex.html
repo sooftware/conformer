@@ -86,7 +86,7 @@
               <p class="caption"><span class="caption-text">PACKAGE</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="Model.html">Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modules.html">Conformer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Submodules.html">Submodules</a></li>
 </ul>
 
@@ -197,6 +197,13 @@
 </li>
       </ul></li>
       <li>
+    conformer.embedding
+
+      <ul>
+        <li><a href="Submodules.html#module-conformer.embedding">module</a>
+</li>
+      </ul></li>
+      <li>
     conformer.encoder
 
       <ul>
@@ -220,10 +227,10 @@
 </li>
       </ul></li>
       <li>
-    conformer.wrapper
+    conformer.modules
 
       <ul>
-        <li><a href="Submodules.html#module-conformer.wrapper">module</a>
+        <li><a href="Submodules.html#module-conformer.modules">module</a>
 </li>
       </ul></li>
       <li><a href="Model.html#conformer.encoder.ConformerBlock">ConformerBlock (class in conformer.encoder)</a>
@@ -257,8 +264,6 @@
 </li>
         <li><a href="Modules.html#conformer.attention.MultiHeadedSelfAttentionModule.forward">(conformer.attention.MultiHeadedSelfAttentionModule method)</a>
 </li>
-        <li><a href="Modules.html#conformer.attention.PositionalEncoding.forward">(conformer.attention.PositionalEncoding method)</a>
-</li>
         <li><a href="Modules.html#conformer.attention.RelativeMultiHeadAttention.forward">(conformer.attention.RelativeMultiHeadAttention method)</a>
 </li>
         <li><a href="Modules.html#conformer.conv.ConformerConvModule.forward">(conformer.conv.ConformerConvModule method)</a>
@@ -269,6 +274,8 @@
 </li>
         <li><a href="Modules.html#conformer.conv.PointwiseConv1d.forward">(conformer.conv.PointwiseConv1d method)</a>
 </li>
+        <li><a href="Submodules.html#conformer.embedding.PositionalEncoding.forward">(conformer.embedding.PositionalEncoding method)</a>
+</li>
         <li><a href="Model.html#conformer.encoder.ConformerBlock.forward">(conformer.encoder.ConformerBlock method)</a>
 </li>
         <li><a href="Model.html#conformer.encoder.ConformerEncoder.forward">(conformer.encoder.ConformerEncoder method)</a>
@@ -277,13 +284,15 @@
 </li>
         <li><a href="Model.html#conformer.model.Conformer.forward">(conformer.model.Conformer method)</a>
 </li>
-        <li><a href="Submodules.html#conformer.wrapper.LayerNorm.forward">(conformer.wrapper.LayerNorm method)</a>
+        <li><a href="Submodules.html#conformer.modules.LayerNorm.forward">(conformer.modules.LayerNorm method)</a>
 </li>
-        <li><a href="Submodules.html#conformer.wrapper.Linear.forward">(conformer.wrapper.Linear method)</a>
+        <li><a href="Submodules.html#conformer.modules.Linear.forward">(conformer.modules.Linear method)</a>
 </li>
-        <li><a href="Submodules.html#conformer.wrapper.Transpose.forward">(conformer.wrapper.Transpose method)</a>
+        <li><a href="Submodules.html#conformer.modules.ResidualConnection.forward">(conformer.modules.ResidualConnection method)</a>
 </li>
-        <li><a href="Submodules.html#conformer.wrapper.View.forward">(conformer.wrapper.View method)</a>
+        <li><a href="Submodules.html#conformer.modules.Transpose.forward">(conformer.modules.Transpose method)</a>
+</li>
+        <li><a href="Submodules.html#conformer.modules.View.forward">(conformer.modules.View method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -300,11 +309,11 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Submodules.html#conformer.wrapper.LayerNorm">LayerNorm (class in conformer.wrapper)</a>
+      <li><a href="Submodules.html#conformer.modules.LayerNorm">LayerNorm (class in conformer.modules)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Submodules.html#conformer.wrapper.Linear">Linear (class in conformer.wrapper)</a>
+      <li><a href="Submodules.html#conformer.modules.Linear">Linear (class in conformer.modules)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -322,13 +331,15 @@
 </li>
         <li><a href="Modules.html#module-conformer.conv">conformer.conv</a>
 </li>
+        <li><a href="Submodules.html#module-conformer.embedding">conformer.embedding</a>
+</li>
         <li><a href="Model.html#module-conformer.encoder">conformer.encoder</a>
 </li>
         <li><a href="Modules.html#module-conformer.feed_forward">conformer.feed_forward</a>
 </li>
         <li><a href="Model.html#module-conformer.model">conformer.model</a>
 </li>
-        <li><a href="Submodules.html#module-conformer.wrapper">conformer.wrapper</a>
+        <li><a href="Submodules.html#module-conformer.modules">conformer.modules</a>
 </li>
       </ul></li>
   </ul></td>
@@ -345,7 +356,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Modules.html#conformer.attention.PositionalEncoding">PositionalEncoding (class in conformer.attention)</a>
+      <li><a href="Submodules.html#conformer.embedding.PositionalEncoding">PositionalEncoding (class in conformer.embedding)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -354,6 +365,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="Modules.html#conformer.attention.RelativeMultiHeadAttention">RelativeMultiHeadAttention (class in conformer.attention)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="Submodules.html#conformer.modules.ResidualConnection">ResidualConnection (class in conformer.modules)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -369,7 +384,7 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Submodules.html#conformer.wrapper.Transpose">Transpose (class in conformer.wrapper)</a>
+      <li><a href="Submodules.html#conformer.modules.Transpose">Transpose (class in conformer.modules)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -377,7 +392,7 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="Submodules.html#conformer.wrapper.View">View (class in conformer.wrapper)</a>
+      <li><a href="Submodules.html#conformer.modules.View">View (class in conformer.modules)</a>
 </li>
   </ul></td>
 </tr></table>

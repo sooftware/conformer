@@ -86,7 +86,7 @@
               <p class="caption"><span class="caption-text">PACKAGE</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../Model.html">Model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../Modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Modules.html">Conformer Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../Submodules.html">Submodules</a></li>
 </ul>
 
@@ -172,10 +172,17 @@
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
 
-<span class="kn">from</span> <span class="nn">conformer.conv</span> <span class="kn">import</span> <span class="n">ConformerConvModule</span><span class="p">,</span> <span class="n">Conv2dSubampling</span>
 <span class="kn">from</span> <span class="nn">conformer.feed_forward</span> <span class="kn">import</span> <span class="n">FeedForwardNet</span>
-<span class="kn">from</span> <span class="nn">conformer.wrapper</span> <span class="kn">import</span> <span class="n">LayerNorm</span><span class="p">,</span> <span class="n">Linear</span>
 <span class="kn">from</span> <span class="nn">conformer.attention</span> <span class="kn">import</span> <span class="n">MultiHeadedSelfAttentionModule</span>
+<span class="kn">from</span> <span class="nn">conformer.conv</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ConformerConvModule</span><span class="p">,</span>
+    <span class="n">Conv2dSubampling</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">conformer.modules</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ResidualConnection</span><span class="p">,</span>
+    <span class="n">LayerNorm</span><span class="p">,</span>
+    <span class="n">Linear</span><span class="p">,</span>
+<span class="p">)</span>
 
 
 <div class="viewcode-block" id="ConformerBlock"><a class="viewcode-back" href="../../Model.html#conformer.encoder.ConformerBlock">[docs]</a><span class="k">class</span> <span class="nc">ConformerBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -220,35 +227,43 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward_residual_factor</span> <span class="o">=</span> <span class="mi">1</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward_module1</span> <span class="o">=</span> <span class="n">FeedForwardNet</span><span class="p">(</span>
-            <span class="n">encoder_dim</span><span class="o">=</span><span class="n">encoder_dim</span><span class="p">,</span>
-            <span class="n">expansion_factor</span><span class="o">=</span><span class="n">feed_forward_expansion_factor</span><span class="p">,</span>
-            <span class="n">dropout_p</span><span class="o">=</span><span class="n">feed_forward_dropout_p</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequential</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">ResidualConnection</span><span class="p">(</span>
+                <span class="n">module</span><span class="o">=</span><span class="n">FeedForwardNet</span><span class="p">(</span>
+                    <span class="n">encoder_dim</span><span class="o">=</span><span class="n">encoder_dim</span><span class="p">,</span>
+                    <span class="n">expansion_factor</span><span class="o">=</span><span class="n">feed_forward_expansion_factor</span><span class="p">,</span>
+                    <span class="n">dropout_p</span><span class="o">=</span><span class="n">feed_forward_dropout_p</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">module_factor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_forward_residual_factor</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">ResidualConnection</span><span class="p">(</span>
+                <span class="n">module</span><span class="o">=</span><span class="n">MultiHeadedSelfAttentionModule</span><span class="p">(</span>
+                    <span class="n">d_model</span><span class="o">=</span><span class="n">encoder_dim</span><span class="p">,</span>
+                    <span class="n">num_heads</span><span class="o">=</span><span class="n">num_attention_heads</span><span class="p">,</span>
+                    <span class="n">dropout_p</span><span class="o">=</span><span class="n">attention_dropout_p</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">),</span>
+            <span class="n">ResidualConnection</span><span class="p">(</span>
+                <span class="n">module</span><span class="o">=</span><span class="n">ConformerConvModule</span><span class="p">(</span>
+                    <span class="n">in_channels</span><span class="o">=</span><span class="n">encoder_dim</span><span class="p">,</span>
+                    <span class="n">kernel_size</span><span class="o">=</span><span class="n">conv_kernel_size</span><span class="p">,</span>
+                    <span class="n">expansion_factor</span><span class="o">=</span><span class="n">conv_expansion_factor</span><span class="p">,</span>
+                    <span class="n">dropout_p</span><span class="o">=</span><span class="n">conv_dropout_p</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">),</span>
+            <span class="n">ResidualConnection</span><span class="p">(</span>
+                <span class="n">module</span><span class="o">=</span><span class="n">FeedForwardNet</span><span class="p">(</span>
+                    <span class="n">encoder_dim</span><span class="o">=</span><span class="n">encoder_dim</span><span class="p">,</span>
+                    <span class="n">expansion_factor</span><span class="o">=</span><span class="n">feed_forward_expansion_factor</span><span class="p">,</span>
+                    <span class="n">dropout_p</span><span class="o">=</span><span class="n">feed_forward_dropout_p</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">module_factor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feed_forward_residual_factor</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">LayerNorm</span><span class="p">(</span><span class="n">encoder_dim</span><span class="p">),</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">multi_headed_self_attention</span> <span class="o">=</span> <span class="n">MultiHeadedSelfAttentionModule</span><span class="p">(</span>
-            <span class="n">d_model</span><span class="o">=</span><span class="n">encoder_dim</span><span class="p">,</span>
-            <span class="n">num_heads</span><span class="o">=</span><span class="n">num_attention_heads</span><span class="p">,</span>
-            <span class="n">dropout_p</span><span class="o">=</span><span class="n">attention_dropout_p</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">conformer_conv_module</span> <span class="o">=</span> <span class="n">ConformerConvModule</span><span class="p">(</span>
-            <span class="n">in_channels</span><span class="o">=</span><span class="n">encoder_dim</span><span class="p">,</span>
-            <span class="n">kernel_size</span><span class="o">=</span><span class="n">conv_kernel_size</span><span class="p">,</span>
-            <span class="n">expansion_factor</span><span class="o">=</span><span class="n">conv_expansion_factor</span><span class="p">,</span>
-            <span class="n">dropout_p</span><span class="o">=</span><span class="n">conv_dropout_p</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward_module2</span> <span class="o">=</span> <span class="n">FeedForwardNet</span><span class="p">(</span>
-            <span class="n">encoder_dim</span><span class="o">=</span><span class="n">encoder_dim</span><span class="p">,</span>
-            <span class="n">expansion_factor</span><span class="o">=</span><span class="n">feed_forward_expansion_factor</span><span class="p">,</span>
-            <span class="n">dropout_p</span><span class="o">=</span><span class="n">feed_forward_dropout_p</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layer_norm</span> <span class="o">=</span> <span class="n">LayerNorm</span><span class="p">(</span><span class="n">encoder_dim</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ConformerBlock.forward"><a class="viewcode-back" href="../../Model.html#conformer.encoder.ConformerBlock.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
-        <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward_module1</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward_residual_factor</span>
-        <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">multi_headed_self_attention</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-        <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">conformer_conv_module</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-        <span class="n">inputs</span> <span class="o">=</span> <span class="n">inputs</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward_module2</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">feed_forward_residual_factor</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequential</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="ConformerEncoder"><a class="viewcode-back" href="../../Model.html#conformer.encoder.ConformerEncoder">[docs]</a><span class="k">class</span> <span class="nc">ConformerEncoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>

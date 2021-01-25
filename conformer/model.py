@@ -14,7 +14,9 @@
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch import Tensor
+from typing import Tuple
 
 from conformer.encoder import ConformerEncoder
 from conformer.modules import Linear
@@ -43,9 +45,11 @@ class Conformer(nn.Module):
 
     Inputs: inputs
         - **inputs** (batch, time, dim): Tensor containing input vector
+        - **input_lengths** (batch): list of sequence input lengths
 
     Returns: outputs, output_lengths
         - **outputs** (batch, out_channels, time): Tensor produces by conformer.
+        - **output_lengths** (batch): list of sequence output lengths
     """
     def __init__(
             self,
@@ -82,6 +86,8 @@ class Conformer(nn.Module):
         )
         self.fc = Linear(encoder_dim, num_classes, bias=False)
 
-    def forward(self, inputs: Tensor) -> Tensor:
-        outputs = self.encoder(inputs)
-        return self.fc(outputs).log_softmax(dim=-1)
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        outputs, output_lengths = self.encoder(inputs, input_lengths)
+        outputs = self.fc(outputs)
+        outputs = F.log_softmax(outputs, dim=-1)
+        return outputs, output_lengths

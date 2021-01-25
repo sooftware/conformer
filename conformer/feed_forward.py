@@ -20,7 +20,7 @@ from conformer.activation import Swish
 from conformer.modules import LayerNorm, Linear
 
 
-class FeedForwardNet(nn.Module):
+class FeedForwardModule(nn.Module):
     """
     Conformer Feed Forward Module follow pre-norm residual units and apply layer normalization within the residual unit
     and on the input before the first linear layer. This module also apply Swish activation and dropout, which helps
@@ -45,7 +45,7 @@ class FeedForwardNet(nn.Module):
             dropout_p: float = 0.1,
             device: torch.device = 'cuda'
     ) -> None:
-        super(FeedForwardNet, self).__init__()
+        super(FeedForwardModule, self).__init__()
         self.device = device
         self.sequential = nn.Sequential(
             LayerNorm(encoder_dim),

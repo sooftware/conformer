@@ -15,8 +15,9 @@
 import torch
 import torch.nn as nn
 from torch import Tensor
+from typing import Tuple
 
-from conformer.feed_forward import FeedForwardNet
+from conformer.feed_forward import FeedForwardModule
 from conformer.attention import MultiHeadedSelfAttentionModule
 from conformer.conv import (
     ConformerConvModule,
@@ -76,7 +77,7 @@ class ConformerBlock(nn.Module):
 
         self.sequential = nn.Sequential(
             ResidualConnectionModule(
-                module=FeedForwardNet(
+                module=FeedForwardModule(
                     encoder_dim=encoder_dim,
                     expansion_factor=feed_forward_expansion_factor,
                     dropout_p=feed_forward_dropout_p,
@@ -100,7 +101,7 @@ class ConformerBlock(nn.Module):
                 ),
             ),
             ResidualConnectionModule(
-                module=FeedForwardNet(
+                module=FeedForwardModule(
                     encoder_dim=encoder_dim,
                     expansion_factor=feed_forward_expansion_factor,
                     dropout_p=feed_forward_dropout_p,
@@ -176,11 +177,11 @@ class ConformerEncoder(nn.Module):
             device=device,
         ).to(device) for _ in range(num_layers)])
 
-    def forward(self, inputs: Tensor) -> Tensor:
-        outputs = self.conv_subsample(inputs)
+    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        outputs, output_lengths = self.conv_subsample(inputs, input_lengths)
         outputs = self.input_projection(outputs)
 
         for layer in self.layers:
             outputs = layer(outputs)
 
-        return outputs
+        return outputs, output_lengths

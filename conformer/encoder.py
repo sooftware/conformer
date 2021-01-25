@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import torch
 import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
@@ -150,6 +151,7 @@ class ConformerEncoder(nn.Module):
             conv_dropout_p: float = 0.1,
             conv_kernel_size: int = 31,
             half_step_residual: bool = True,
+            device: torch.device = 'cuda',
     ):
         super(ConformerEncoder, self).__init__()
         self.conv_subsample = Conv2dSubampling(in_channels=1, out_channels=encoder_dim)
@@ -167,7 +169,7 @@ class ConformerEncoder(nn.Module):
             conv_dropout_p=conv_dropout_p,
             conv_kernel_size=conv_kernel_size,
             half_step_residual=half_step_residual,
-        ) for _ in range(num_layers)]
+        ).to(device) for _ in range(num_layers)]
 
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
         outputs, output_lengths = self.conv_subsample(inputs, input_lengths)

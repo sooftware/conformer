@@ -37,8 +37,8 @@ class LayerNorm(nn.Module):
     """ Wrapper class of torch.nn.LayerNorm """
     def __init__(self, dim: int, eps: float = 1e-6, device: torch.device = 'cuda') -> None:
         super(LayerNorm, self).__init__()
-        self.gamma = nn.Parameter(torch.ones(dim))
-        self.beta = nn.Parameter(torch.zeros(dim))
+        self.gamma = nn.Parameter(torch.ones(dim)).to(device)
+        self.beta = nn.Parameter(torch.zeros(dim)).to(device)
         self.eps = eps
         self.device = device
 

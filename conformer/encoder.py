@@ -162,7 +162,7 @@ class ConformerEncoder(nn.Module):
             Linear(encoder_dim * (((input_dim - 1) // 2 - 1) // 2), encoder_dim),
             nn.Dropout(p=input_dropout_p),
         )
-        self.layers = [ConformerBlock(
+        self.layers = nn.ModuleList([ConformerBlock(
             encoder_dim=encoder_dim,
             num_attention_heads=num_attention_heads,
             feed_forward_expansion_factor=feed_forward_expansion_factor,
@@ -173,7 +173,7 @@ class ConformerEncoder(nn.Module):
             conv_kernel_size=conv_kernel_size,
             half_step_residual=half_step_residual,
             device=device,
-        ).to(device) for _ in range(num_layers)]
+        ).to(device) for _ in range(num_layers)])
 
     def forward(self, inputs: Tensor) -> Tensor:
         outputs = self.conv_subsample(inputs)

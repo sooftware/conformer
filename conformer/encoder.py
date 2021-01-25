@@ -15,7 +15,6 @@
 import torch
 import torch.nn as nn
 from torch import Tensor
-from typing import Tuple
 
 from conformer.feed_forward import FeedForwardNet
 from conformer.attention import MultiHeadedSelfAttentionModule
@@ -47,6 +46,7 @@ class ConformerBlock(nn.Module):
         conv_dropout_p (float, optional): Probability of conformer convolution module dropout
         conv_kernel_size (int or tuple, optional): Size of the convolving kernel
         half_step_residual (bool): Flag indication whether to use half step residual or not
+        device (torch.device): torch device (cuda or cpu)
 
     Inputs: inputs
         - **inputs** (batch, time, dim): Tensor containing input vector
@@ -129,6 +129,7 @@ class ConformerEncoder(nn.Module):
         conv_dropout_p (float, optional): Probability of conformer convolution module dropout
         conv_kernel_size (int or tuple, optional): Size of the convolving kernel
         half_step_residual (bool): Flag indication whether to use half step residual or not
+        device (torch.device): torch device (cuda or cpu)
 
     Inputs: inputs, input_lengths
         - **inputs** (batch, time, dim): Tensor containing input vector
@@ -173,11 +174,11 @@ class ConformerEncoder(nn.Module):
             device=device,
         ).to(device) for _ in range(num_layers)]
 
-    def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
-        outputs, output_lengths = self.conv_subsample(inputs, input_lengths)
+    def forward(self, inputs: Tensor) -> Tensor:
+        outputs = self.conv_subsample(inputs)
         outputs = self.input_projection(outputs)
 
         for layer in self.layers:
             outputs = layer(outputs)
 
-        return outputs, output_lengths
+        return outputs

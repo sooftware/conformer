@@ -56,7 +56,13 @@ device = torch.device('cuda' if cuda else 'cpu')
 
 inputs = torch.rand(batch_size, sequence_length, dim).to(device)
 
-model = nn.DataParallel(Conformer(num_classes=10, input_dim=dim, encoder_dim=512, num_layers=3, device=device)).to(device)
+model = nn.DataParallel(Conformer(
+    num_classes=10, 
+    input_dim=dim, 
+    encoder_dim=512, 
+    num_layers=3, 
+    device=device,
+)).to(device)
 outputs = model(inputs)
 ```
   

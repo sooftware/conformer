@@ -53,8 +53,8 @@ batch_size, sequence_length, dimension = 3, 12345, 80
 cuda = torch.cuda.is_available()
 device = torch.device('cuda' if cuda else 'cpu')
 
-inputs = torch.rand(batch_size, sequence_length, dimension).to(device)  # BxTxD
-input_lengths = torch.LongTensor([14321, 14300, 13000]).to(device)
+inputs = torch.rand(batch_size, sequence_length, dimension).to(device)  
+input_lengths = torch.LongTensor([12345, 12300, 12000]).to(device)
 
 model = Conformer(num_classes=10, input_dim=dimension, encoder_dim=512, num_layers=17)
 outputs = model(inputs, input_lengths)

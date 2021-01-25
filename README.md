@@ -55,6 +55,7 @@ cuda = torch.cuda.is_available()
 device = torch.device('cuda' if cuda else 'cpu')
 
 inputs = torch.rand(batch_size, sequence_length, dim).to(device)
+input_lengths = torch.IntTensor([12345, 12300, 12000])
 
 model = nn.DataParallel(Conformer(
     num_classes=10, 
@@ -63,7 +64,8 @@ model = nn.DataParallel(Conformer(
     num_layers=3, 
     device=device,
 )).to(device)
-outputs = model(inputs)
+
+outputs, output_lengths = model(inputs, input_lengths)
 ```
   
 ## Troubleshoots and Contributing

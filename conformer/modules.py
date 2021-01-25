@@ -18,6 +18,21 @@ import torch.nn.init as init
 from torch import Tensor
 
 
+class ResidualConnection(nn.Module):
+    """
+    Residual Connection Module.
+    outputs = (module(inputs) x module_factor + inputs x input_factor)
+    """
+    def __init__(self, module: nn.Module, module_factor: int = 1, input_factor: int = 1):
+        super(ResidualConnection, self).__init__()
+        self.module = module
+        self.module_factor = module_factor
+        self.input_factor = input_factor
+
+    def forward(self, inputs: Tensor) -> Tensor:
+        return (self.module(inputs) * self.module_factor) + (inputs * self.input_factor)
+
+
 class LayerNorm(nn.Module):
     """ Wrapper class of torch.nn.LayerNorm """
     def __init__(self, dim: int, eps: float = 1e-6) -> None:

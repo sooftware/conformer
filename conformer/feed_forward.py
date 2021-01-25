@@ -46,6 +46,7 @@ class FeedForwardNet(nn.Module):
             device: torch.device = 'cuda'
     ) -> None:
         super(FeedForwardNet, self).__init__()
+        self.device = device
         self.sequential = nn.Sequential(
             LayerNorm(encoder_dim),
             Linear(encoder_dim, encoder_dim * expansion_factor, bias=True),
@@ -56,4 +57,4 @@ class FeedForwardNet(nn.Module):
         ).to(device)
 
     def forward(self, inputs: Tensor) -> Tensor:
-        return self.sequential(inputs)
+        return self.sequential(inputs.to(self.device))

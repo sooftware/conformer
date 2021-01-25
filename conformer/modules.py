@@ -23,7 +23,7 @@ class ResidualConnection(nn.Module):
     Residual Connection Module.
     outputs = (module(inputs) x module_factor + inputs x input_factor)
     """
-    def __init__(self, module: nn.Module, module_factor: int = 1, input_factor: int = 1):
+    def __init__(self, module: nn.Module, module_factor: float = 1.0, input_factor: float = 1.0):
         super(ResidualConnection, self).__init__()
         self.module = module
         self.module_factor = module_factor

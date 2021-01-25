@@ -145,7 +145,7 @@ class ConformerConvModule(nn.Module):
             Swish(),
             PointwiseConv1d(in_channels, in_channels, stride=1, padding=0, bias=True),
             nn.Dropout(p=dropout_p),
-        ).to(device)
+        )
 
     def forward(self, inputs: Tensor) -> Tensor:
         return self.sequential(inputs.to(self.device)).transpose(1, 2)

@@ -23,7 +23,7 @@ from conformer.conv import (
     Conv2dSubampling,
 )
 from conformer.modules import (
-    ResidualConnection,
+    ResidualConnectionModule,
     LayerNorm,
     Linear,
 )
@@ -75,38 +75,38 @@ class ConformerBlock(nn.Module):
             self.feed_forward_residual_factor = 1
 
         self.sequential = nn.Sequential(
-            ResidualConnection(
+            ResidualConnectionModule(
                 module=FeedForwardNet(
                     encoder_dim=encoder_dim,
                     expansion_factor=feed_forward_expansion_factor,
                     dropout_p=feed_forward_dropout_p,
                     device=device,
-                ).to(device),
+                ),
                 module_factor=self.feed_forward_residual_factor,
-            ).to(device),
-            ResidualConnection(
+            ),
+            ResidualConnectionModule(
                 module=MultiHeadedSelfAttentionModule(
                     d_model=encoder_dim,
                     num_heads=num_attention_heads,
                     dropout_p=attention_dropout_p,
-                ).to(device),
-            ).to(device),
-            ResidualConnection(
+                ),
+            ),
+            ResidualConnectionModule(
                 module=ConformerConvModule(
                     in_channels=encoder_dim,
                     kernel_size=conv_kernel_size,
                     expansion_factor=conv_expansion_factor,
                     dropout_p=conv_dropout_p,
-                ).to(device),
-            ).to(device),
-            ResidualConnection(
+                ),
+            ),
+            ResidualConnectionModule(
                 module=FeedForwardNet(
                     encoder_dim=encoder_dim,
                     expansion_factor=feed_forward_expansion_factor,
                     dropout_p=feed_forward_dropout_p,
-                ).to(device),
+                ),
                 module_factor=self.feed_forward_residual_factor,
-            ).to(device),
+            ),
             LayerNorm(encoder_dim),
         )
 

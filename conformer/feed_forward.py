@@ -54,7 +54,7 @@ class FeedForwardNet(nn.Module):
             nn.Dropout(p=dropout_p),
             Linear(encoder_dim * expansion_factor, encoder_dim, bias=True),
             nn.Dropout(p=dropout_p),
-        ).to(device)
+        )
 
     def forward(self, inputs: Tensor) -> Tensor:
         return self.sequential(inputs.to(self.device))

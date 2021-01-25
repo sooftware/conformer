@@ -48,13 +48,13 @@ class FeedForwardNet(nn.Module):
         super(FeedForwardNet, self).__init__()
         self.device = device
         self.sequential = nn.Sequential(
-            LayerNorm(encoder_dim, device=device),
+            LayerNorm(encoder_dim),
             Linear(encoder_dim, encoder_dim * expansion_factor, bias=True),
             Swish(),
             nn.Dropout(p=dropout_p),
             Linear(encoder_dim * expansion_factor, encoder_dim, bias=True),
             nn.Dropout(p=dropout_p),
-        ).to(device)
+        )
 
     def forward(self, inputs: Tensor) -> Tensor:
         return self.sequential(inputs.to(self.device))

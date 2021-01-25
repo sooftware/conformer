@@ -23,7 +23,7 @@ from conformer.conv import (
     Conv2dSubampling,
 )
 from conformer.modules import (
-    ResidualConnection,
+    ResidualConnectionModule,
     LayerNorm,
     Linear,
 )
@@ -68,49 +68,50 @@ class ConformerBlock(nn.Module):
             device: torch.device = 'cuda',
     ):
         super(ConformerBlock, self).__init__()
+        self.device = device
         if half_step_residual:
             self.feed_forward_residual_factor = 0.5
         else:
             self.feed_forward_residual_factor = 1
 
         self.sequential = nn.Sequential(
-            ResidualConnection(
+            ResidualConnectionModule(
                 module=FeedForwardNet(
                     encoder_dim=encoder_dim,
                     expansion_factor=feed_forward_expansion_factor,
                     dropout_p=feed_forward_dropout_p,
                     device=device,
-                ).to(device),
+                ),
                 module_factor=self.feed_forward_residual_factor,
-            ).to(device),
-            ResidualConnection(
+            ),
+            ResidualConnectionModule(
                 module=MultiHeadedSelfAttentionModule(
                     d_model=encoder_dim,
                     num_heads=num_attention_heads,
                     dropout_p=attention_dropout_p,
-                ).to(device),
-            ).to(device),
-            ResidualConnection(
+                ),
+            ),
+            ResidualConnectionModule(
                 module=ConformerConvModule(
                     in_channels=encoder_dim,
                     kernel_size=conv_kernel_size,
                     expansion_factor=conv_expansion_factor,
                     dropout_p=conv_dropout_p,
-                ).to(device),
-            ).to(device),
-            ResidualConnection(
+                ),
+            ),
+            ResidualConnectionModule(
                 module=FeedForwardNet(
                     encoder_dim=encoder_dim,
                     expansion_factor=feed_forward_expansion_factor,
                     dropout_p=feed_forward_dropout_p,
-                ).to(device),
+                ),
                 module_factor=self.feed_forward_residual_factor,
-            ).to(device),
-            LayerNorm(encoder_dim, device=device),
+            ),
+            LayerNorm(encoder_dim),
         )
 
     def forward(self, inputs: Tensor) -> Tensor:
-        return self.sequential(inputs)
+        return self.sequential(inputs.to(self.device))
 
 
 class ConformerEncoder(nn.Module):
@@ -162,7 +163,7 @@ class ConformerEncoder(nn.Module):
             Linear(encoder_dim * (((input_dim - 1) // 2 - 1) // 2), encoder_dim),
             nn.Dropout(p=input_dropout_p),
         )
-        self.layers = [ConformerBlock(
+        self.layers = nn.ModuleList([ConformerBlock(
             encoder_dim=encoder_dim,
             num_attention_heads=num_attention_heads,
             feed_forward_expansion_factor=feed_forward_expansion_factor,
@@ -173,7 +174,7 @@ class ConformerEncoder(nn.Module):
             conv_kernel_size=conv_kernel_size,
             half_step_residual=half_step_residual,
             device=device,
-        ).to(device) for _ in range(num_layers)]
+        ).to(device) for _ in range(num_layers)])
 
     def forward(self, inputs: Tensor) -> Tensor:
         outputs = self.conv_subsample(inputs)

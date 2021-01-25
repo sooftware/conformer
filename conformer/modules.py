@@ -18,13 +18,13 @@ import torch.nn.init as init
 from torch import Tensor
 
 
-class ResidualConnection(nn.Module):
+class ResidualConnectionModule(nn.Module):
     """
     Residual Connection Module.
     outputs = (module(inputs) x module_factor + inputs x input_factor)
     """
     def __init__(self, module: nn.Module, module_factor: float = 1.0, input_factor: float = 1.0):
-        super(ResidualConnection, self).__init__()
+        super(ResidualConnectionModule, self).__init__()
         self.module = module
         self.module_factor = module_factor
         self.input_factor = input_factor
@@ -35,18 +35,16 @@ class ResidualConnection(nn.Module):
 
 class LayerNorm(nn.Module):
     """ Wrapper class of torch.nn.LayerNorm """
-    def __init__(self, dim: int, eps: float = 1e-6, device: torch.device = 'cuda') -> None:
+    def __init__(self, dim: int, eps: float = 1e-6) -> None:
         super(LayerNorm, self).__init__()
         self.gamma = nn.Parameter(torch.ones(dim))
         self.beta = nn.Parameter(torch.zeros(dim))
         self.eps = eps
-        self.device = device
 
     def forward(self, z: Tensor) -> Tensor:
         mean = z.mean(dim=-1, keepdim=True)
         std = z.std(dim=-1, keepdim=True)
         output = (z - mean) / (std + self.eps)
-        output = output.to(self.device)
         output = self.gamma * output + self.beta
         return output
 

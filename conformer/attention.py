@@ -138,7 +138,7 @@ class MultiHeadedSelfAttentionModule(nn.Module):
         super(MultiHeadedSelfAttentionModule, self).__init__()
         self.positional_encoding = PositionalEncoding(d_model)
         self.layer_norm = LayerNorm(d_model)
-        self.attention = RelativeMultiHeadAttention(d_model, num_heads, dropout_p).to(device)
+        self.attention = RelativeMultiHeadAttention(d_model, num_heads, dropout_p)
         self.dropout = nn.Dropout(p=dropout_p)
         self.device = device
 

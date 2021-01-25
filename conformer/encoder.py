@@ -79,6 +79,7 @@ class ConformerBlock(nn.Module):
                     encoder_dim=encoder_dim,
                     expansion_factor=feed_forward_expansion_factor,
                     dropout_p=feed_forward_dropout_p,
+                    device=device,
                 ).to(device),
                 module_factor=self.feed_forward_residual_factor,
             ).to(device),

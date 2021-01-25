@@ -68,6 +68,7 @@ class ConformerBlock(nn.Module):
             device: torch.device = 'cuda',
     ):
         super(ConformerBlock, self).__init__()
+        self.device = device
         if half_step_residual:
             self.feed_forward_residual_factor = 0.5
         else:
@@ -106,11 +107,11 @@ class ConformerBlock(nn.Module):
                 ).to(device),
                 module_factor=self.feed_forward_residual_factor,
             ).to(device),
-            LayerNorm(encoder_dim, device=device),
+            LayerNorm(encoder_dim),
         )
 
     def forward(self, inputs: Tensor) -> Tensor:
-        return self.sequential(inputs)
+        return self.sequential(inputs.to(self.device))
 
 
 class ConformerEncoder(nn.Module):

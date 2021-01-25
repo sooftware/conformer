@@ -22,7 +22,7 @@
      </a>
 
   
-Transformer models are good at capturing content-based global interactions, while CNNs exploit local features effectively. Conformer combine convolution neural networks and transformers to model both local and global dependencies of an audio sequence in a parameter-efficient way. Conformer significantly outperforms the previous Transformer and CNN based models achieving state-of-the-art accuracies. In the paper, conformer used a one-lstm Transducer decoder, currently still only implemented the conformer encoder shown in the paper.
+Transformer models are good at capturing content-based global interactions, while CNNs exploit local features effectively. Conformer combine convolution neural networks and transformers to model both local and global dependencies of an audio sequence in a parameter-efficient way. Conformer significantly outperforms the previous Transformer and CNN based models achieving state-of-the-art accuracies. In the paper, conformer used a one-lstm Transducer decoder, currently still only implemented the conformer encoder shown in the paper. This repository contains only model code, but you can train with conformer with [this repository](https://github.com/sooftware/kospeech).
 
 <img src="https://user-images.githubusercontent.com/42150335/105602364-aeafad80-5dd8-11eb-8886-b75e2d9d31f4.png" height=600>
   

@@ -48,7 +48,7 @@ class FeedForwardNet(nn.Module):
         super(FeedForwardNet, self).__init__()
         self.device = device
         self.sequential = nn.Sequential(
-            LayerNorm(encoder_dim),
+            LayerNorm(encoder_dim, device=device),
             Linear(encoder_dim, encoder_dim * expansion_factor, bias=True),
             Swish(),
             nn.Dropout(p=dropout_p),

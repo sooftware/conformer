@@ -106,7 +106,7 @@ class ConformerBlock(nn.Module):
                 ).to(device),
                 module_factor=self.feed_forward_residual_factor,
             ).to(device),
-            LayerNorm(encoder_dim),
+            LayerNorm(encoder_dim, device=device),
         )
 
     def forward(self, inputs: Tensor) -> Tensor:

@@ -18,7 +18,7 @@ from typing import Tuple
 
 from conformer.conv import ConformerConvModule, Conv2dSubampling
 from conformer.feed_forward import FeedForwardNet
-from conformer.wrapper import LayerNorm, Linear
+from conformer.modules import LayerNorm, Linear
 from conformer.attention import MultiHeadedSelfAttentionModule
 
 
@@ -64,35 +64,43 @@ class ConformerBlock(nn.Module):
         else:
             self.feed_forward_residual_factor = 1
 
-        self.feed_forward_module1 = FeedForwardNet(
-            encoder_dim=encoder_dim,
-            expansion_factor=feed_forward_expansion_factor,
-            dropout_p=feed_forward_dropout_p,
+        self.sequential = nn.Sequential(
+            ResidualConnection(
+                module=FeedForwardNet(
+                    encoder_dim=encoder_dim,
+                    expansion_factor=feed_forward_expansion_factor,
+                    dropout_p=feed_forward_dropout_p,
+                ),
+                module_factor=self.feed_forward_residual_factor,
+            ),
+            ResidualConnection(
+                module=MultiHeadedSelfAttentionModule(
+                    d_model=encoder_dim,
+                    num_heads=num_attention_heads,
+                    dropout_p=attention_dropout_p,
+                ),
+            ),
+            ResidualConnection(
+                module=ConformerConvModule(
+                    in_channels=encoder_dim,
+                    kernel_size=conv_kernel_size,
+                    expansion_factor=conv_expansion_factor,
+                    dropout_p=conv_dropout_p,
+                ),
+            ),
+            ResidualConnection(
+                module=FeedForwardNet(
+                    encoder_dim=encoder_dim,
+                    expansion_factor=feed_forward_expansion_factor,
+                    dropout_p=feed_forward_dropout_p,
+                ),
+                module_factor=self.feed_forward_residual_factor,
+            ),
+            LayerNorm(encoder_dim),
         )
-        self.multi_headed_self_attention = MultiHeadedSelfAttentionModule(
-            d_model=encoder_dim,
-            num_heads=num_attention_heads,
-            dropout_p=attention_dropout_p,
-        )
-        self.conformer_conv_module = ConformerConvModule(
-            in_channels=encoder_dim,
-            kernel_size=conv_kernel_size,
-            expansion_factor=conv_expansion_factor,
-            dropout_p=conv_dropout_p,
-        )
-        self.feed_forward_module2 = FeedForwardNet(
-            encoder_dim=encoder_dim,
-            expansion_factor=feed_forward_expansion_factor,
-            dropout_p=feed_forward_dropout_p,
-        )
-        self.layer_norm = LayerNorm(encoder_dim)
 
     def forward(self, inputs: Tensor) -> Tensor:
-        inputs += self.feed_forward_module1(inputs) * self.feed_forward_residual_factor
-        inputs += self.multi_headed_self_attention(inputs)
-        inputs += self.conformer_conv_module(inputs)
-        inputs += self.feed_forward_module2(inputs) * self.feed_forward_residual_factor
-        return self.layer_norm(inputs)
+        return self.sequential(inputs)
 
 
 class ConformerEncoder(nn.Module):

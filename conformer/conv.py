@@ -15,8 +15,9 @@
 import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
+
 from conformer.activation import Swish, GLU
-from conformer.wrapper import LayerNorm, Transpose
+from conformer.modules import LayerNorm, Transpose
 
 
 class DepthwiseConv1d(nn.Module):

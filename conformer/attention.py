@@ -86,7 +86,7 @@ class RelativeMultiHeadAttention(nn.Module):
 
         content_score = torch.matmul((query + self.u_bias).transpose(1, 2), key.transpose(2, 3))
         pos_score = torch.matmul((query + self.v_bias).transpose(1, 2), pos_embedding.permute(0, 2, 3, 1))
-        pos_score = self._compute_relative_positional_encoding(pos_score)
+        pos_score = self._relative_shift(pos_score)
 
         score = (content_score + pos_score) / self.sqrt_dim
 
@@ -102,7 +102,7 @@ class RelativeMultiHeadAttention(nn.Module):
 
         return self.out_proj(context)
 
-    def _compute_relative_positional_encoding(self, pos_score: Tensor) -> Tensor:
+    def _relative_shift(self, pos_score: Tensor) -> Tensor:
         batch_size, num_heads, seq_length1, seq_length2 = pos_score.size()
         zeros = pos_score.new_zeros(batch_size, num_heads, seq_length1, 1)
         padded_pos_score = torch.cat([zeros, pos_score], dim=-1)

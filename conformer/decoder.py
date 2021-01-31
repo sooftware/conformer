@@ -16,7 +16,7 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
 
-from kospeech.models.modules import Linear
+from conformer.modules import Linear
 
 
 class DecoderRNNT(nn.Module):

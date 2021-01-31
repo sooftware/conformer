@@ -177,7 +177,32 @@ class ConformerEncoder(nn.Module):
             device=device,
         ).to(device) for _ in range(num_layers)])
 
+    def count_parameters(self) -> int:
+        """ Count parameters of encoder """
+        return sum([p.numel for p in self.parameters()])
+
+    def update_dropout(self, dropout_p: float) -> None:
+        """ Update dropout probability of encoder """
+        for name, child in self.named_children():
+            if isinstance(child, nn.Dropout):
+                child.p = dropout_p
+
     def forward(self, inputs: Tensor, input_lengths: Tensor) -> Tuple[Tensor, Tensor]:
+        """
+        Forward propagate a `inputs` for  encoder training.
+
+        Args:
+            inputs (torch.FloatTensor): A input sequence passed to encoder. Typically for inputs this will be a padded
+                `FloatTensor` of size ``(batch, seq_length, dimension)``.
+            input_lengths (torch.LongTensor): The length of input tensor. ``(batch)``
+
+        Returns:
+            (Tensor, Tensor)
+
+            * outputs (torch.FloatTensor): A output sequence of encoder. `FloatTensor` of size
+                ``(batch, seq_length, dimension)``
+            * output_lengths (torch.LongTensor): The length of output tensor. ``(batch)``
+        """
         outputs, output_lengths = self.conv_subsample(inputs, input_lengths)
         outputs = self.input_projection(outputs)
 

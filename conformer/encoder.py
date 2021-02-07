@@ -19,7 +19,7 @@ from typing import Tuple
 
 from conformer.feed_forward import FeedForwardModule
 from conformer.attention import MultiHeadedSelfAttentionModule
-from conformer.conv import (
+from conformer.convolution import (
     ConformerConvModule,
     Conv2dSubampling,
 )

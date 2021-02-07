@@ -13,3 +13,9 @@ Encoder
 
 .. automodule:: conformer.encoder
     :members:
+
+Decoder
+--------------------------------------------
+
+.. automodule:: conformer.decoder
+    :members:

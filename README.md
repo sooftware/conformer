@@ -17,7 +17,7 @@
      <a href="https://github.com/sooftware/conformer">
           <img src="http://img.shields.io/badge/build-passing-success"> 
      </a>
-     <a href="https://sooftware.github.io/conformer">
+     <a href="https://sooftware.github.io/KoSpeech/Conformer.html">
           <img src="http://img.shields.io/badge/docs-passing-success"> 
      </a>
 

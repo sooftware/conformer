@@ -99,11 +99,7 @@ class Conformer(nn.Module):
             rnn_type=decoder_rnn_type,
             dropout_p=decoder_dropout_p,
         )
-        self.fc = nn.Sequential(
-            Linear(encoder_dim << 1, encoder_dim),
-            nn.Tanh(),
-            Linear(encoder_dim, num_classes, bias=False),
-        )
+        self.fc = Linear(encoder_dim << 1, num_classes, bias=False)
 
     def set_encoder(self, encoder):
         """ Setter for encoder """
@@ -229,4 +225,3 @@ class Conformer(nn.Module):
         outputs = torch.stack(outputs, dim=1).transpose(0, 1)
 
         return outputs
-

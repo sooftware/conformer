@@ -11,7 +11,7 @@ Attention
 Convolution
 --------------------------------------------
 
-.. automodule:: conformer.conv
+.. automodule:: conformer.convolution
     :members:
 
 Feed Forward

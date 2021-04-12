@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(
     name='conformer',
+    packages = find_packages(),
     version='latest',
     description='Convolution-augmented Transformer for Speech Recognition',
     author='Soohwan Kim',
@@ -26,5 +27,5 @@ setup(
         'numpy',
     ],
     keywords=['asr', 'speech_recognition', 'conformer', 'end-to-end'],
-    python_requires='>=3.7'
+    python_requires='>=3.6'
 )

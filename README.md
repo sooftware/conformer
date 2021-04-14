@@ -26,7 +26,7 @@ Transformer models are good at capturing content-based global interactions, whil
 
 <img src="https://user-images.githubusercontent.com/42150335/105602364-aeafad80-5dd8-11eb-8886-b75e2d9d31f4.png" height=600>
   
-This repository contains only model code, but you can train with conformer with [this repository](https://github.com/sooftware/kospeech).
+This repository contains only model code, but you can train with conformer with [KoSpeech](https://github.com/sooftware/kospeech) or [lasr](https://github.com/sooftware/lasr).  
   
 ## Installation
 This project recommends Python 3.7 or higher.

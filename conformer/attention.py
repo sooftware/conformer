@@ -20,7 +20,7 @@ from torch import Tensor
 from typing import Optional
 
 from conformer.embedding import PositionalEncoding
-from conformer.modules import Linear, LayerNorm
+from conformer.modules import Linear
 
 
 class RelativeMultiHeadAttention(nn.Module):
@@ -137,7 +137,7 @@ class MultiHeadedSelfAttentionModule(nn.Module):
     def __init__(self, d_model: int, num_heads: int, dropout_p: float = 0.1, device: torch.device = 'cuda'):
         super(MultiHeadedSelfAttentionModule, self).__init__()
         self.positional_encoding = PositionalEncoding(d_model)
-        self.layer_norm = LayerNorm(d_model)
+        self.layer_norm = nn.LayerNorm(d_model)
         self.attention = RelativeMultiHeadAttention(d_model, num_heads, dropout_p)
         self.dropout = nn.Dropout(p=dropout_p)
         self.device = device

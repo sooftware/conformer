@@ -33,22 +33,6 @@ class ResidualConnectionModule(nn.Module):
         return (self.module(inputs) * self.module_factor) + (inputs * self.input_factor)
 
 
-class LayerNorm(nn.Module):
-    """ Wrapper class of torch.nn.LayerNorm """
-    def __init__(self, dim: int, eps: float = 1e-6) -> None:
-        super(LayerNorm, self).__init__()
-        self.gamma = nn.Parameter(torch.ones(dim))
-        self.beta = nn.Parameter(torch.zeros(dim))
-        self.eps = eps
-
-    def forward(self, z: Tensor) -> Tensor:
-        mean = z.mean(dim=-1, keepdim=True)
-        std = z.std(dim=-1, keepdim=True)
-        output = (z - mean) / (std + self.eps)
-        output = self.gamma * output + self.beta
-        return output
-
-
 class Linear(nn.Module):
     """
     Wrapper class of torch.nn.Linear

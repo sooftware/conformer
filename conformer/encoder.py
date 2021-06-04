@@ -25,7 +25,6 @@ from conformer.convolution import (
 )
 from conformer.modules import (
     ResidualConnectionModule,
-    LayerNorm,
     Linear,
 )
 
@@ -108,7 +107,7 @@ class ConformerBlock(nn.Module):
                 ),
                 module_factor=self.feed_forward_residual_factor,
             ),
-            LayerNorm(encoder_dim),
+            nn.LayerNorm(encoder_dim),
         )
 
     def forward(self, inputs: Tensor) -> Tensor:

@@ -18,7 +18,7 @@ from torch import Tensor
 from typing import Tuple
 
 from conformer.activation import Swish, GLU
-from conformer.modules import LayerNorm, Transpose
+from conformer.modules import Transpose
 
 
 class DepthwiseConv1d(nn.Module):
@@ -137,7 +137,7 @@ class ConformerConvModule(nn.Module):
 
         self.device = device
         self.sequential = nn.Sequential(
-            LayerNorm(in_channels),
+            nn.LayerNorm(in_channels),
             Transpose(shape=(1, 2)),
             PointwiseConv1d(in_channels, in_channels * expansion_factor, stride=1, padding=0, bias=True),
             GLU(dim=1),

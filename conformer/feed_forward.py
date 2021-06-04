@@ -17,7 +17,7 @@ import torch.nn as nn
 from torch import Tensor
 
 from conformer.activation import Swish
-from conformer.modules import LayerNorm, Linear
+from conformer.modules import Linear
 
 
 class FeedForwardModule(nn.Module):
@@ -48,7 +48,7 @@ class FeedForwardModule(nn.Module):
         super(FeedForwardModule, self).__init__()
         self.device = device
         self.sequential = nn.Sequential(
-            LayerNorm(encoder_dim),
+            nn.LayerNorm(encoder_dim),
             Linear(encoder_dim, encoder_dim * expansion_factor, bias=True),
             Swish(),
             nn.Dropout(p=dropout_p),

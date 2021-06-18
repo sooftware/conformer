@@ -89,6 +89,7 @@ class ConformerBlock(nn.Module):
                     d_model=encoder_dim,
                     num_heads=num_attention_heads,
                     dropout_p=attention_dropout_p,
+                    device=device,
                 ),
             ),
             ResidualConnectionModule(
@@ -97,6 +98,7 @@ class ConformerBlock(nn.Module):
                     kernel_size=conv_kernel_size,
                     expansion_factor=conv_expansion_factor,
                     dropout_p=conv_dropout_p,
+                    device=device,
                 ),
             ),
             ResidualConnectionModule(
@@ -104,6 +106,7 @@ class ConformerBlock(nn.Module):
                     encoder_dim=encoder_dim,
                     expansion_factor=feed_forward_expansion_factor,
                     dropout_p=feed_forward_dropout_p,
+                    device=device,
                 ),
                 module_factor=self.feed_forward_residual_factor,
             ),

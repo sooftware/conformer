@@ -115,7 +115,6 @@ class ConformerConvModule(nn.Module):
         in_channels (int): Number of channels in the input
         kernel_size (int or tuple, optional): Size of the convolving kernel Default: 31
         dropout_p (float, optional): probability of dropout
-        device (torch.device): torch device (cuda or cpu)
 
     Inputs: inputs
         inputs (batch, time, dim): Tensor contains input sequences
@@ -129,13 +128,11 @@ class ConformerConvModule(nn.Module):
             kernel_size: int = 31,
             expansion_factor: int = 2,
             dropout_p: float = 0.1,
-            device: torch.device = 'cuda',
     ) -> None:
         super(ConformerConvModule, self).__init__()
         assert (kernel_size - 1) % 2 == 0, "kernel_size should be a odd number for 'SAME' padding"
         assert expansion_factor == 2, "Currently, Only Supports expansion_factor 2"
 
-        self.device = device
         self.sequential = nn.Sequential(
             nn.LayerNorm(in_channels),
             Transpose(shape=(1, 2)),
@@ -149,7 +146,7 @@ class ConformerConvModule(nn.Module):
         )
 
     def forward(self, inputs: Tensor) -> Tensor:
-        return self.sequential(inputs.to(self.device)).transpose(1, 2)
+        return self.sequential(inputs).transpose(1, 2)
 
 
 class Conv2dSubampling(nn.Module):

@@ -44,7 +44,6 @@ class Conformer(nn.Module):
         decoder_dropout_p (float, optional): Probability of conformer decoder dropout
         conv_kernel_size (int or tuple, optional): Size of the convolving kernel
         half_step_residual (bool): Flag indication whether to use half step residual or not
-        device (torch.device): torch device (cuda or cpu)
 
     Inputs: inputs
         - **inputs** (batch, time, dim): Tensor containing input vector
@@ -73,7 +72,6 @@ class Conformer(nn.Module):
             conv_kernel_size: int = 31,
             half_step_residual: bool = True,
             decoder_rnn_type: str = "lstm",
-            device: torch.device = 'cuda',
     ) -> None:
         super(Conformer, self).__init__()
         self.encoder = ConformerEncoder(
@@ -89,7 +87,6 @@ class Conformer(nn.Module):
             conv_dropout_p=conv_dropout_p,
             conv_kernel_size=conv_kernel_size,
             half_step_residual=half_step_residual,
-            device=device,
         )
         self.decoder = DecoderRNNT(
             num_classes=num_classes,

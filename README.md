@@ -71,7 +71,7 @@ target_lengths = torch.LongTensor([9, 8, 7])
 
 model = nn.DataParallel(Conformer(num_classes=10, input_dim=dim, 
                                   encoder_dim=32, num_encoder_layers=3, 
-                                  decoder_dim=32, device=device)).to(device)
+                                  decoder_dim=32)).to(device)
 
 # Forward propagate
 outputs = model(inputs, input_lengths, targets, target_lengths)

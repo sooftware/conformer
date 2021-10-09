@@ -46,7 +46,6 @@ class ConformerBlock(nn.Module):
         conv_dropout_p (float, optional): Probability of conformer convolution module dropout
         conv_kernel_size (int or tuple, optional): Size of the convolving kernel
         half_step_residual (bool): Flag indication whether to use half step residual or not
-        device (torch.device): torch device (cuda or cpu)
 
     Inputs: inputs
         - **inputs** (batch, time, dim): Tensor containing input vector
@@ -65,10 +64,8 @@ class ConformerBlock(nn.Module):
             conv_dropout_p: float = 0.1,
             conv_kernel_size: int = 31,
             half_step_residual: bool = True,
-            device: torch.device = 'cuda',
     ):
         super(ConformerBlock, self).__init__()
-        self.device = device
         if half_step_residual:
             self.feed_forward_residual_factor = 0.5
         else:
@@ -80,7 +77,6 @@ class ConformerBlock(nn.Module):
                     encoder_dim=encoder_dim,
                     expansion_factor=feed_forward_expansion_factor,
                     dropout_p=feed_forward_dropout_p,
-                    device=device,
                 ),
                 module_factor=self.feed_forward_residual_factor,
             ),
@@ -89,7 +85,6 @@ class ConformerBlock(nn.Module):
                     d_model=encoder_dim,
                     num_heads=num_attention_heads,
                     dropout_p=attention_dropout_p,
-                    device=device,
                 ),
             ),
             ResidualConnectionModule(
@@ -98,7 +93,6 @@ class ConformerBlock(nn.Module):
                     kernel_size=conv_kernel_size,
                     expansion_factor=conv_expansion_factor,
                     dropout_p=conv_dropout_p,
-                    device=device,
                 ),
             ),
             ResidualConnectionModule(
@@ -106,12 +100,15 @@ class ConformerBlock(nn.Module):
                     encoder_dim=encoder_dim,
                     expansion_factor=feed_forward_expansion_factor,
                     dropout_p=feed_forward_dropout_p,
-                    device=device,
                 ),
                 module_factor=self.feed_forward_residual_factor,
             ),
             nn.LayerNorm(encoder_dim),
         )
+
+    @property
+    def device(self):
+        return next(self.parameters()).device
 
     def forward(self, inputs: Tensor) -> Tensor:
         return self.sequential(inputs.to(self.device))
@@ -134,7 +131,6 @@ class ConformerEncoder(nn.Module):
         conv_dropout_p (float, optional): Probability of conformer convolution module dropout
         conv_kernel_size (int or tuple, optional): Size of the convolving kernel
         half_step_residual (bool): Flag indication whether to use half step residual or not
-        device (torch.device): torch device (cuda or cpu)
 
     Inputs: inputs, input_lengths
         - **inputs** (batch, time, dim): Tensor containing input vector
@@ -158,7 +154,6 @@ class ConformerEncoder(nn.Module):
             conv_dropout_p: float = 0.1,
             conv_kernel_size: int = 31,
             half_step_residual: bool = True,
-            device: torch.device = 'cuda',
     ):
         super(ConformerEncoder, self).__init__()
         self.conv_subsample = Conv2dSubampling(in_channels=1, out_channels=encoder_dim)
@@ -176,8 +171,7 @@ class ConformerEncoder(nn.Module):
             conv_dropout_p=conv_dropout_p,
             conv_kernel_size=conv_kernel_size,
             half_step_residual=half_step_residual,
-            device=device,
-        ).to(device) for _ in range(num_layers)])
+        ) for _ in range(num_layers)])
 
     def count_parameters(self) -> int:
         """ Count parameters of encoder """

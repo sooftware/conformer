@@ -30,7 +30,6 @@ class FeedForwardModule(nn.Module):
         encoder_dim (int): Dimension of conformer encoder
         expansion_factor (int): Expansion factor of feed forward module.
         dropout_p (float): Ratio of dropout
-        device (torch.device): torch device (cuda or cpu)
 
     Inputs: inputs
         - **inputs** (batch, time, dim): Tensor contains input sequences
@@ -43,10 +42,8 @@ class FeedForwardModule(nn.Module):
             encoder_dim: int = 512,
             expansion_factor: int = 4,
             dropout_p: float = 0.1,
-            device: torch.device = 'cuda'
     ) -> None:
         super(FeedForwardModule, self).__init__()
-        self.device = device
         self.sequential = nn.Sequential(
             nn.LayerNorm(encoder_dim),
             Linear(encoder_dim, encoder_dim * expansion_factor, bias=True),
@@ -55,6 +52,10 @@ class FeedForwardModule(nn.Module):
             Linear(encoder_dim * expansion_factor, encoder_dim, bias=True),
             nn.Dropout(p=dropout_p),
         )
+
+    @property
+    def device(self):
+        return next(self.parameters()).device
 
     def forward(self, inputs: Tensor) -> Tensor:
         return self.sequential(inputs.to(self.device))

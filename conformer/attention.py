@@ -142,7 +142,7 @@ class MultiHeadedSelfAttentionModule(nn.Module):
 
     def forward(self, inputs: Tensor, mask: Optional[Tensor] = None):
         batch_size, seq_length, _ = inputs.size()
-        pos_embedding = self.positional_encoding(seq_length).to(inputs.device)
+        pos_embedding = self.positional_encoding(seq_length)
         pos_embedding = pos_embedding.repeat(batch_size, 1, 1)
 
         inputs = self.layer_norm(inputs)

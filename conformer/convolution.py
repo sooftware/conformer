@@ -145,12 +145,8 @@ class ConformerConvModule(nn.Module):
             nn.Dropout(p=dropout_p),
         )
 
-    @property
-    def device(self):
-        return next(self.parameters()).device
-
     def forward(self, inputs: Tensor) -> Tensor:
-        return self.sequential(inputs.to(self.device)).transpose(1, 2)
+        return self.sequential(inputs).transpose(1, 2)
 
 
 class Conv2dSubampling(nn.Module):

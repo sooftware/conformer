@@ -106,12 +106,8 @@ class ConformerBlock(nn.Module):
             nn.LayerNorm(encoder_dim),
         )
 
-    @property
-    def device(self):
-        return next(self.parameters()).device
-
     def forward(self, inputs: Tensor) -> Tensor:
-        return self.sequential(inputs.to(self.device))
+        return self.sequential(inputs)
 
 
 class ConformerEncoder(nn.Module):

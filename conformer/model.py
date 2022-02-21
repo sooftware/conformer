@@ -80,7 +80,7 @@ class Conformer(nn.Module):
             conv_kernel_size=conv_kernel_size,
             half_step_residual=half_step_residual,
         )
-        self.fc = Linear(encoder_dim << 1, num_classes, bias=False)
+        self.fc = Linear(encoder_dim, num_classes, bias=False)
 
     def count_parameters(self) -> int:
         """ Count parameters of encoder """
@@ -103,4 +103,6 @@ class Conformer(nn.Module):
             * predictions (torch.FloatTensor): Result of model predictions.
         """
         encoder_outputs, encoder_output_lengths = self.encoder(inputs, input_lengths)
-        return encoder_outputs, encoder_output_lengths
+        outputs = self.fc(encoder_outputs)
+        outputs = nn.functional.log_softmax(outputs, dim=-1)
+        return outputs, encoder_output_lengths

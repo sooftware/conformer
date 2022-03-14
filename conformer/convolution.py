@@ -17,8 +17,8 @@ import torch.nn as nn
 from torch import Tensor
 from typing import Tuple
 
-from conformer.activation import Swish, GLU
-from conformer.modules import Transpose
+from .activation import Swish, GLU
+from .modules import Transpose
 
 
 class DepthwiseConv1d(nn.Module):

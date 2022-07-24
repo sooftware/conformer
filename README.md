@@ -65,7 +65,7 @@ device = torch.device('cuda' if cuda else 'cpu')
 criterion = nn.CTCLoss().to(device)
 
 inputs = torch.rand(batch_size, sequence_length, dim).to(device)
-input_lengths = torch.IntTensor([12345, 12300, 12000])
+input_lengths = torch.LongTensor([12345, 12300, 12000])
 targets = torch.LongTensor([[1, 3, 3, 3, 3, 3, 4, 5, 6, 2],
                             [1, 3, 3, 3, 3, 3, 4, 5, 2, 0],
                             [1, 3, 3, 3, 3, 3, 4, 2, 0, 0]]).to(device)

@@ -41,7 +41,7 @@ class Conformer(nn.Module):
         conv_kernel_size (int or tuple, optional): Size of the convolving kernel
         half_step_residual (bool): Flag indication whether to use half step residual or not
 
-    Inputs: inputs
+    Inputs: inputs, input_lengths
         - **inputs** (batch, time, dim): Tensor containing input vector
         - **input_lengths** (batch): list of sequence input lengths
 

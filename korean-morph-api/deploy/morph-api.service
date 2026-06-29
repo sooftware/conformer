@@ -1,0 +1,17 @@
+# /etc/systemd/system/morph-api.service
+# 활성화: sudo systemctl daemon-reload && sudo systemctl enable --now morph-api
+[Unit]
+Description=Korean Morph + Urimalsaem Sense API
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/korean-morph-api
+EnvironmentFile=/home/ubuntu/korean-morph-api/.env
+ExecStart=/home/ubuntu/korean-morph-api/.venv/bin/gunicorn app.main:app \
+    -k uvicorn.workers.UvicornWorker -w 2 -b 127.0.0.1:8000 --timeout 120
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

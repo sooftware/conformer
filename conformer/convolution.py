@@ -188,6 +188,6 @@ class Conv2dSubampling(nn.Module):
         outputs = outputs.contiguous().view(batch_size, subsampled_lengths, channels * sumsampled_dim)
 
         # Each conv (kernel_size=3, stride=2, no padding) maps a length of L to (L - 1) // 2.
-        output_lengths = (((input_lengths - 1) >> 1) - 1) >> 1
+        output_lengths = ((((input_lengths - 1) >> 1) - 1) >> 1).clamp(min=0)
 
         return outputs, output_lengths

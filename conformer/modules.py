@@ -29,8 +29,8 @@ class ResidualConnectionModule(nn.Module):
         self.module_factor = module_factor
         self.input_factor = input_factor
 
-    def forward(self, inputs: Tensor) -> Tensor:
-        return (self.module(inputs) * self.module_factor) + (inputs * self.input_factor)
+    def forward(self, inputs: Tensor, *args) -> Tensor:
+        return (self.module(inputs, *args) * self.module_factor) + (inputs * self.input_factor)
 
 
 class Linear(nn.Module):

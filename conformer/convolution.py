@@ -15,7 +15,7 @@
 import torch
 import torch.nn as nn
 from torch import Tensor
-from typing import Tuple
+from typing import Optional, Tuple
 
 from .activation import Swish, GLU
 from .modules import Transpose
@@ -116,8 +116,9 @@ class ConformerConvModule(nn.Module):
         kernel_size (int or tuple, optional): Size of the convolving kernel Default: 31
         dropout_p (float, optional): probability of dropout
 
-    Inputs: inputs
+    Inputs: inputs, mask
         inputs (batch, time, dim): Tensor contains input sequences
+        mask (batch, 1, time): Tensor containing indices to be masked (True at padded frames)
 
     Outputs: outputs
         outputs (batch, time, dim): Tensor produces by conformer convolution module.
@@ -145,8 +146,14 @@ class ConformerConvModule(nn.Module):
             nn.Dropout(p=dropout_p),
         )
 
-    def forward(self, inputs: Tensor) -> Tensor:
-        return self.sequential(inputs).transpose(1, 2)
+    def forward(self, inputs: Tensor, mask: Optional[Tensor] = None) -> Tensor:
+        outputs = inputs
+        for layer in self.sequential:
+            if mask is not None and isinstance(layer, DepthwiseConv1d):
+                # Zero out padded frames so they do not leak into valid frames through the kernel.
+                outputs = outputs.masked_fill(mask, 0.0)
+            outputs = layer(outputs)
+        return outputs.transpose(1, 2)
 
 
 class Conv2dSubampling(nn.Module):
@@ -180,7 +187,7 @@ class Conv2dSubampling(nn.Module):
         outputs = outputs.permute(0, 2, 1, 3)
         outputs = outputs.contiguous().view(batch_size, subsampled_lengths, channels * sumsampled_dim)
 
-        output_lengths = input_lengths >> 2
-        output_lengths -= 1
+        # Each conv (kernel_size=3, stride=2, no padding) maps a length of L to (L - 1) // 2.
+        output_lengths = (((input_lengths - 1) >> 1) - 1) >> 1
 
         return outputs, output_lengths

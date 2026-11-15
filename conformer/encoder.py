@@ -15,7 +15,7 @@
 import torch
 import torch.nn as nn
 from torch import Tensor
-from typing import Tuple
+from typing import Optional, Tuple
 
 from .feed_forward import FeedForwardModule
 from .attention import MultiHeadedSelfAttentionModule
@@ -47,8 +47,9 @@ class ConformerBlock(nn.Module):
         conv_kernel_size (int or tuple, optional): Size of the convolving kernel
         half_step_residual (bool): Flag indication whether to use half step residual or not
 
-    Inputs: inputs
+    Inputs: inputs, mask
         - **inputs** (batch, time, dim): Tensor containing input vector
+        - **mask** (batch, 1, time): Tensor containing indices to be masked (True at padded frames)
 
     Returns: outputs
         - **outputs** (batch, time, dim): Tensor produces by conformer block.
@@ -106,8 +107,13 @@ class ConformerBlock(nn.Module):
             nn.LayerNorm(encoder_dim),
         )
 
-    def forward(self, inputs: Tensor) -> Tensor:
-        return self.sequential(inputs)
+    def forward(self, inputs: Tensor, mask: Optional[Tensor] = None) -> Tensor:
+        feed_forward1, attention, conv, feed_forward2, layer_norm = self.sequential
+        outputs = feed_forward1(inputs)
+        outputs = attention(outputs, mask)
+        outputs = conv(outputs, mask)
+        outputs = feed_forward2(outputs)
+        return layer_norm(outputs)
 
 
 class ConformerEncoder(nn.Module):
@@ -198,7 +204,11 @@ class ConformerEncoder(nn.Module):
         outputs, output_lengths = self.conv_subsample(inputs, input_lengths)
         outputs = self.input_projection(outputs)
 
+        # True at padded frames, (batch, 1, time)
+        positions = torch.arange(outputs.size(1), device=outputs.device)
+        mask = (positions[None, :] >= output_lengths.to(outputs.device)[:, None]).unsqueeze(1)
+
         for layer in self.layers:
-            outputs = layer(outputs)
+            outputs = layer(outputs, mask)
 
         return outputs, output_lengths

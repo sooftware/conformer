@@ -46,7 +46,7 @@ class Conformer(nn.Module):
         - **input_lengths** (batch): list of sequence input lengths
 
     Returns: outputs, output_lengths
-        - **outputs** (batch, out_channels, time): Tensor produces by conformer.
+        - **outputs** (batch, time, num_classes): Log probabilities produced by conformer.
         - **output_lengths** (batch): list of sequence output lengths
     """
     def __init__(

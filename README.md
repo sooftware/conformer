@@ -45,8 +45,12 @@ Currently we only support installation from source code using setuptools. Checko
 following commands:  
   
 ```
+git clone https://github.com/sooftware/conformer.git
+cd conformer
 pip install -e .
 ```
+
+Note that `pip install conformer` installs a different project ([lucidrains/conformer](https://github.com/lucidrains/conformer)) that happens to share the name on PyPI, and the usage below will not work with it.
 
 ## Usage
 
